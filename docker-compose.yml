@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  electron:
+    build:
+      context: ./electron-app
+      dockerfile: Dockerfile
+    volumes:
+      - ./electron-app:/app
+      - /app/node_modules
+    environment:
+      - DISPLAY=${DISPLAY}
+      - ELECTRON_ENABLE_LOGGING=1
+    network_mode: host
+    ipc: host
+    privileged: true
+    tty: true
