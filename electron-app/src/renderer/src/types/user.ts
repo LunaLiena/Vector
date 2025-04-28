@@ -1,7 +1,8 @@
+import { Role } from "./role";
 
 export interface User {
     username: string;
-    role: { id: number; name: string } | null;
+    role: Role | null;
     accessToken: string;
     refreshToken: string;
 }

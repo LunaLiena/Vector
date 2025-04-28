@@ -24,7 +24,8 @@ export const BodyContent = ({style,children,motionkey}:BodyContentProps)=>{
                 style={{...defaultStyles,...style}} 
                 initial="initial" 
                 animate="animate" 
-                exit="exit" 
+                exit="exi
+                t" 
                 transition={transition}
                 variants={slideFadeVariants}
             >

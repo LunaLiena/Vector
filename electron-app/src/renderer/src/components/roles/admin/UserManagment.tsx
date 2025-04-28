@@ -2,7 +2,8 @@ import { Button, TextInput, Text, Card, User } from "@gravity-ui/uikit";
 import { useState, useEffect } from "react";
 import { UserForm } from "@shared/UserForm";
 import {UserService} from "@services/userService";
-import type {User as UserType} from '@api-types/user';
+import { type User as UserType} from '@api-types/user';
+import api from "@api/api";
 
 export const UserManagement = () => {
   const [users, setUsers] = useState<Array<UserType>>([]);
@@ -10,52 +11,44 @@ export const UserManagement = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingUser, setEditingUser] = useState<UserType | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [error,setError] = useState<string|null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-
-    const fetchUsers = async () =>{
+  const fetchUsers = async () => {
+    try {
       setIsLoading(true);
       setError(null);
-      try{
-        const response = await UserService.getAllUsers();
-        setUsers(Array.isArray(response) ? response : []);
-      }catch(err){
-        console.error('Failed to fetch users:', error);
-        setError('Не удалось загрузить пользователей');
-        setUsers([]);
-      }finally{
-        setIsLoading(false);
-      }
-    };
+      const response = await api.get<Array<UserType>>('/users');
+      setUsers(response.data || []); // Добавлено || [] на случай если data undefined
+    } catch (err) {
+      console.error('Error fetching users:', err);
+      setError('Ошибка загрузки данных');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    useEffect(()=>{
-      fetchUsers();
-    },[]);
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-  const handleEdit = (user:UserType)=>{
+  const handleEdit = (user: UserType) => {
     setEditingUser(user);
     setShowForm(true);
   };
 
-  const handleDelete = async (userId:number)=>{
-    try{
+  const handleDelete = async (userId: number) => {
+    try {
       await UserService.deleteUser(userId);
       await fetchUsers();
-    }catch(err){
-      console.error('Error deleting user:', error);
-      setError('Failed to delete user. Please try again.');
+    } catch (err) {
+      console.error('Error deleting user:', err);
+      setError('Не удалось удалить пользователя');
     }
   };
 
-  const filteredUsers = users.filter(user=>user.username.toLowerCase().includes(searchQuery.toLowerCase()));
-  
-  if (isLoading) {
-    return <Text>Загрузка данных...</Text>;
-  }
-
-  if (error) {
-    return <Text color="danger">{error}</Text>;
-  }
+  const filteredUsers = users.filter(user => 
+    user.username.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="user-management">
@@ -79,9 +72,13 @@ export const UserManagement = () => {
 
         {isLoading ? (
           <Text>Загрузка данных...</Text>
+        ) : error ? (
+          <Text color="danger">{error}</Text>
+        ) : filteredUsers.length === 0 ? (
+          <Text>Пользователи не найдены</Text>
         ) : (
           <div className="users-grid">
-            {users.map(user => (
+            {filteredUsers.map(user => (
               <Card key={user.id} view="filled" className="user-card">
                 <div className="user-info">
                   <User
@@ -121,12 +118,6 @@ export const UserManagement = () => {
             setShowForm(false);
           }}
         />
-      )}
-
-      {error &&(
-        <div className="error-message">
-          <Text color="danger">{error}</Text>
-        </div>
       )}
     </div>
   );

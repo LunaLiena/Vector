@@ -1,103 +1,155 @@
-import { Button, TextInput, Label, Text, Card, Checkbox } from "@gravity-ui/uikit";
+import { Button, Text, Card, Checkbox, Modal, Box } from "@gravity-ui/uikit";
 import { useState, useEffect } from "react";
-import { RoleForm } from "../shared/RoleForm";
+import { RoleForm } from "@shared/RoleForm";
 import api from '@api/api';
+import {Route} from '@api-types/route';
+import { Role } from "@api-types/role";
+
+interface ModalWindowProps {
+  routes: Array<Route>;
+  role: Role | null;
+}
+
+const PermissionsModal = ({ routes, role }: ModalWindowProps) => {
+  return (
+    <Box style={{padding:2}}>
+      <Text variant="subheader-2" as="h3" className="permissions-title">
+        Разрешения для роли: {role?.name}
+      </Text>
+      <div className="permissions-grid">
+        {routes.map(route => (
+          <Box key={route.id} style={{padding:2}}>
+            <Checkbox
+              checked={role?.routes?.some(r => r.id === route.id) || false}
+              disabled
+              size="l"
+            >
+              <Text variant="body-2">{route.description || route.description}</Text>
+            </Checkbox>
+          </Box>
+        ))}
+      </div>
+    </Box>
+  );
+};
 
 export const RoleManagement = () => {
-  const [roles, setRoles] = useState([]);
-  const [routes, setRoutes] = useState([]);
+  const [roles, setRoles] = useState<Array<Role>>([]);
+  const [routes, setRoutes] = useState<Array<Route>>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error,setError] = useState<string|null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [editingRole, setEditingRole] = useState(null);
+  const [showPermissionsModal, setShowPermissionsModal] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
+  const [editingRole, setEditingRole] = useState<Role | null>(null);
 
-  useEffect(() => {
-    fetchRoles();
-    fetchRoutes();
-  }, []);
-
-  const fetchRoles = async () => {
-    setIsLoading(true);
+  const fetchData = async () => {
     try {
-      const response = await api.get('/roles');
-      setRoles(response.data);
+      setIsLoading(true);
+      const [rolesResponse,routesResponse] = await Promise.all([
+        api.get<Array<Role>>('/roles'),
+        api.get<Array<Route>>('/routes'),
+      ]);
+      
+
+      console.log('Roles response:',rolesResponse);
+      console.log('Routes response:',routesResponse);
+
+      setRoles(rolesResponse.data || []);
+      setRoutes(routesResponse.data || []);
     } catch (error) {
-      console.error('Error fetching roles:', error);
+      console.error('Error:', error);
+      setError('Ошибка загрузки данных');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const fetchRoutes = async () => {
+
+  useEffect(()=>{
+    fetchData();
+  },[]);
+
+  const handleDelete = async (roleId: number) => {
+
+    if (!window.confirm('Вы уверены, что хотите удалить эту роль?')) return;
+
     try {
-      const response = await api.get('/routes');
-      setRoutes(response.data);
+      setIsLoading(true);
+      await api.delete(`/roles/${roleId}`);
+      await fetchData();
     } catch (error) {
-      console.error('Error fetching routes:', error);
+      console.error('Error deleting role:', error);
+      setError('Ошибка удаления роли');
+    }finally{
+      setIsLoading(false);
     }
   };
 
-  const handleDelete = async (roleId) => {
-    try {
-      await api.delete(`/roles/${roleId}`);
-      fetchRoles();
-    } catch (error) {
-      console.error('Error deleting role:', error);
-    }
+  const handleShowPermissions = (role: Role) => {
+    setSelectedRole(role);
+    setShowPermissionsModal(true);
   };
 
   return (
+
     <div className="role-management">
       <Card view="raised" className="section-card">
         <div className="section-header">
-          <Text variant="header-2">Звания и должности</Text>
+          <Text variant="header-2">Управления ролями</Text>
           <Button view="action" onClick={() => {
             setEditingRole(null);
             setShowForm(true);
-          }}>
+          }}
+          loading={isLoading}
+          >
             Создать новое звание
           </Button>
         </div>
 
+        {error && (
+          <div className="error-message">
+            <Text color="danger">{error}</Text>
+          </div>
+        )}
+
         {isLoading ? (
-          <Text>Загрузка данных...</Text>
+          <div className="loading-state">
+            <Text>Загрузка данных...</Text>
+          </div>
         ) : (
           <div className="roles-list">
-            {roles.map(role => (
-              <Card key={role.id} view="filled" className="role-card">
-                <div className="role-header">
-                  <Text variant="subheader-2">{role.name}</Text>
-                  <Text color="secondary">{role.description}</Text>
-                </div>
-                
-                <div className="role-permissions">
-                  <Text variant="subheader-3">Доступные действия:</Text>
-                  <div className="permissions-grid">
-                    {routes.map(route => (
-                      <Checkbox 
-                        key={route.id}
-                        checked={role.routes?.some(r => r.id === route.id)}
-                        disabled
-                        size="l"
-                      >
-                        {route.description}
-                      </Checkbox>
-                    ))}
+            {!roles || roles.length === 0 ? (
+              <div className="empty-state">
+                <Text>Нет доступных ролей</Text>
+              </div>
+            ) : (
+              roles.map(role => (
+                <Card key={role.id} view="filled" className="role-card">
+                  <div className="role-header">
+                    <Text variant="subheader-2">{role.name}</Text>
+                    {role.description && (
+                      <Text color="secondary">{role.description}</Text>
+                    )}
                   </div>
-                </div>
-                
-                <div className="role-actions">
-                  <Button view="outlined" onClick={() => {
-                    setEditingRole(role);
-                    setShowForm(true);
-                  }}>
-                    Редактировать
-                  </Button>
-                  <Button view="outlined-danger" onClick={() => handleDelete(role.id)}>
-                    Удалить
-                  </Button>
-                </div>
-              </Card>
-            ))}
+
+                  <div className="role-actions">
+                    <Button view="outlined" onClick={() => handleShowPermissions(role)} disabled={isLoading}>
+                      Просмотр разрешений
+                    </Button>
+                    <Button view="outlined" onClick={() => {
+                      setEditingRole(role);
+                      setShowForm(true);
+                    }}>
+                      Редактировать
+                    </Button>
+                    <Button view="outlined-danger" onClick={() => handleDelete(role.id)} loading={isLoading}>
+                      Удалить
+                    </Button>
+                  </div>
+                </Card>
+              ))
+            )}
           </div>
         )}
       </Card>
@@ -111,11 +163,28 @@ export const RoleManagement = () => {
             setEditingRole(null);
           }}
           onSuccess={() => {
-            fetchRoles();
+            fetchData();
             setShowForm(false);
           }}
         />
       )}
+
+      <Modal open={showPermissionsModal} onOpenChange={() => setShowPermissionsModal(false)}>
+        <Card view="raised" className="permissions-modal-card">
+          {selectedRole && (
+            <PermissionsModal 
+              routes={routes || []} 
+              role={selectedRole} 
+            />
+          )}
+          <div className="modal-footer">
+            <Button view="normal" onClick={() => setShowPermissionsModal(false)}>
+              Закрыть
+            </Button>
+          </div>
+        </Card>
+      </Modal>
     </div>
-  );
+
+    );
 };
