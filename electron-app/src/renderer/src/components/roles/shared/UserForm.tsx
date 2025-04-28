@@ -1,134 +1,263 @@
-import { Button, TextInput, Label, Text, Select, Modal } from "@gravity-ui/uikit";
-import { useState, useEffect } from "react";
-import  api  from "@api/api";
+import { CSSProperties, ReactNode, useState, useEffect } from "react";
+import { Button, TextInput, Label, Text, Select, Modal, useToaster } from "@gravity-ui/uikit";
+import { motion } from 'framer-motion';
+import api from "@api/api";
+import { Role } from "@api-types/role";
+import { User } from "@api-types/user";
 
-export const UserForm = ({ user, onClose, onSuccess }) => {
+interface UserFormProps {
+  user?: User;
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+interface Status {
+  id: number;
+  statusName: string;
+}
+
+const MotionDiv = ({ children }: { children: ReactNode }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.3 }}
+  >
+    {children}
+  </motion.div>
+);
+
+export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
     roleId: '',
     statusId: ''
   });
-  const [roles, setRoles] = useState([]);
-  const [statuses, setStatuses] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [statuses, setStatuses] = useState<Status[]>([]);
+  const [loading, setLoading] = useState({
+    data: false,
+    submit: false
+  });
+  const { add } = useToaster();
 
   useEffect(() => {
-    fetchRolesAndStatuses();
-    
-    if (user) {
-      setFormData({
-        username: user.username,
-        password: '',
-        roleId: user.role?.id || '',
-        statusId: user.status?.id || ''
-      });
-    }
-  }, [user]);
+    const fetchData = async () => {
+      setLoading(prev => ({ ...prev, data: true }));
+      try {
+        const [rolesRes, statusesRes] = await Promise.all([
+          api.get<Role[]>('/roles'),
+          api.get<Status[]>('/status')
+        ]);
+        
+        setRoles(rolesRes.data);
+        setStatuses(statusesRes.data);
+        
+        if (user) {
+          setFormData({
+            username: user.username,
+            password: '',
+            roleId: user.role?.id.toString() || '',
+            statusId: user.status?.id.toString() || ''
+          });
+        }
+      } catch (error) {
+        add({
+          name: 'load-error',
+          title: 'Ошибка загрузки',
+          content: 'Не удалось загрузить данные',
+          theme: 'danger',
+          autoHiding: 5000,
+        });
+      } finally {
+        setLoading(prev => ({ ...prev, data: false }));
+      }
+    };
 
-  const fetchRolesAndStatuses = async () => {
-    setIsLoading(true);
-    try {
-      const [rolesRes, statusesRes] = await Promise.all([
-        api.get('/roles'),
-        api.get('/status')
-      ]);
-      setRoles(rolesRes.data);
-      setStatuses(statusesRes.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    fetchData();
+  }, [user, add]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setLoading(prev => ({ ...prev, submit: true }));
     
     try {
+      const payload = {
+        ...formData,
+        roleId: Number(formData.roleId),
+        statusId: Number(formData.statusId)
+      };
+
       if (user) {
-        // Обновление пользователя
-        await api.put(`/users/${user.id}`, formData);
+        await api.put(`/users/${user.id}`, payload);
+        add({
+          name: 'update-success',
+          title: 'Успешно',
+          content: 'Данные пользователя обновлены',
+          theme: 'success',
+          autoHiding: 3000,
+        });
       } else {
-        // Создание пользователя
-        await api.post('/register', formData);
+        await api.post('/register', payload);
+        add({
+          name: 'create-success',
+          title: 'Успешно',
+          content: 'Пользователь создан',
+          theme: 'success',
+          autoHiding: 3000,
+        });
       }
       onSuccess();
     } catch (error) {
-      console.error('Error saving user:', error);
+      add({
+        name: 'save-error',
+        title: 'Ошибка',
+        content: 'Не удалось сохранить данные',
+        theme: 'danger',
+        autoHiding: 5000,
+      });
     } finally {
-      setIsLoading(false);
+      setLoading(prev => ({ ...prev, submit: false }));
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   return (
     <Modal open={true} onClose={onClose}>
-      <div className="user-form">
-        <Text variant="header-2">{user ? 'Редактировать члена экипажа' : 'Добавить нового члена экипажа'}</Text>
-        
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <Label>Имя пользователя:</Label>
-            <TextInput 
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-            />
-          </div>
+      <div style={{ 
+        padding: '32px',
+        width: '500px',
+        maxWidth: '90vw',
+        margin: '0 auto'
+      }}>
+        <MotionDiv>
+          <Text 
+            variant="header-2" 
+            as="h2" 
+            style={{ 
+              marginBottom: '24px', 
+              textAlign: 'center',
+              color: 'var(--g-color-text-primary)'
+            }}
+          >
+            {user ? 'Редактировать члена экипажа' : 'Добавить нового члена экипажа'}
+          </Text>
           
-          <div className="form-group">
-            <Label>Пароль:</Label>
-            <TextInput 
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-          </div>
-          
-          <div className="form-group">
-            <Label>Звание:</Label>
-            <Select
-              name="roleId"
-              value={[formData.roleId]}
-              onUpdate={(value) => setFormData(prev => ({ ...prev, roleId: value[0] }))}
-              options={roles.map(role => ({
-                value: role.id,
-                content: role.name
-              }))}
-              disabled={isLoading}
-            />
-          </div>
-          
-          <div className="form-group">
-            <Label>Статус:</Label>
-            <Select
-              name="statusId"
-              value={[formData.statusId]}
-              onUpdate={(value) => setFormData(prev => ({ ...prev, statusId: value[0] }))}
-              options={statuses.map(status => ({
-                value: status.id,
-                content: status.statusName
-              }))}
-              disabled={isLoading}
-            />
-          </div>
-          
-          <div className="form-actions">
-            <Button view="normal" type="button" onClick={onClose}>
-              Отмена
-            </Button>
-            <Button view="action" type="submit" loading={isLoading}>
-              {user ? 'Сохранить' : 'Создать'}
-            </Button>
-          </div>
-        </form>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '8px' }}>
+                <Text variant="subheader-2">Имя пользователя</Text>
+              </div>
+              <TextInput
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="Введите имя пользователя"
+                size="l"
+                disabled={loading.data}
+                hasClear
+              />
+            </div>
+            
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '8px' }}>
+                <Text variant="subheader-2">Пароль</Text>
+              </div>
+              <TextInput
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Введите пароль"
+                size="l"
+                disabled={loading.data}
+                hasClear
+              />
+            </div>
+            
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '8px' }}>
+                <Text variant="subheader-2">Звание</Text>
+              </div>
+              <Select
+                value={formData.roleId ? [formData.roleId] : []}
+                onUpdate={(value) => setFormData(prev => ({ ...prev, roleId: value[0] }))}
+                options={roles.map(role => ({
+                  value: role.id.toString(),
+                  content: role.name
+                }))}
+                placeholder="Выберите звание"
+                size="l"
+                disabled={loading.data}
+                filterable
+                hasClear
+              />
+            </div>
+            
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '8px' }}>
+                <Text variant="subheader-2">Статус</Text>
+              </div>
+              <Select
+                value={formData.statusId ? [formData.statusId] : []}
+                onUpdate={(value) => setFormData(prev => ({ ...prev, statusId: value[0] }))}
+                options={statuses.map(status => ({
+                  value: status.id.toString(),
+                  content: status.statusName
+                }))}
+                placeholder="Выберите статус"
+                size="l"
+                disabled={loading.data}
+                filterable
+                hasClear
+              />
+            </div>
+            
+            <div style={{ 
+              display: 'flex', 
+              gap: '12px', 
+              marginTop: '16px'
+            }}>
+              <motion.div 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.98 }} 
+                style={{ flex: 1 }}
+              >
+                <Button
+                  view="outlined"
+                  type="button"
+                  onClick={onClose}
+                  size="l"
+                  width="max"
+                  disabled={loading.submit}
+                >
+                  Отмена
+                </Button>
+              </motion.div>
+              
+              <motion.div 
+                whileHover={{ scale: 1.02 }} 
+                whileTap={{ scale: 0.98 }} 
+                style={{ flex: 1 }}
+              >
+                <Button
+                  view="action"
+                  type="submit"
+                  loading={loading.submit}
+                  size="l"
+                  width="max"
+                >
+                  {user ? 'Сохранить' : 'Создать'}
+                </Button>
+              </motion.div>
+            </div>
+          </form>
+        </MotionDiv>
       </div>
     </Modal>
   );

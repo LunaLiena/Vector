@@ -45,7 +45,7 @@ export const RoleForm = ({ role, routes, onClose, onSuccess }) => {
   };
 
   return (
-    <Modal open={true} onClose={onClose}>
+    <Modal open={true} onOpenChange={onClose}>
       <div className="role-form">
         <Text variant="header-2">{role ? 'Редактировать звание' : 'Создать новое звание'}</Text>
         
