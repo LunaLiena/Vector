@@ -1,60 +1,140 @@
-import { Button, Text, Card, Checkbox, Modal, Box } from "@gravity-ui/uikit";
+import { Button, Text, Card, Checkbox, Modal, Box, TextInput } from "@gravity-ui/uikit";
 import { useState, useEffect } from "react";
 import { RoleForm } from "@shared/RoleForm";
 import api from '@api/api';
-import {Route} from '@api-types/route';
+import { Route } from '@api-types/route';
 import { Role } from "@api-types/role";
-
+import { Stack } from "./admin-components/stack";
+import { BaseModalForm } from "../shared/BaseModalForm";
+import { motion } from "framer-motion";
 interface ModalWindowProps {
-  routes: Array<Route>;
-  role: Role | null;
+  routes: Route[];
+  role: Role;
+  onClose: () => void;
 }
 
-const PermissionsModal = ({ routes, role }: ModalWindowProps) => {
+const PermissionsModal = ({ routes, role, onClose }: ModalWindowProps) => {
+  const allowedRoutes = routes.filter(route => 
+    role.routes?.some(r => r.id === route.id)
+  );
+
   return (
-    <Box style={{padding:2}}>
-      <Text variant="subheader-2" as="h3" className="permissions-title">
-        Разрешения для роли: {role?.name}
-      </Text>
-      <div className="permissions-grid">
-        {routes.map(route => (
-          <Box key={route.id} style={{padding:2}}>
-            <Checkbox
-              checked={role?.routes?.some(r => r.id === route.id) || false}
-              disabled
-              size="l"
+    <BaseModalForm
+      title={`Разрешения для роли: ${role.name}`}
+      onClose={onClose}
+      width={600}
+    >
+      <Box style={{ padding: 8 }}>
+        {allowedRoutes.length > 0 ? (
+          <>
+            <div style={{
+              maxHeight: '60vh',
+              overflowY: 'auto',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+              gap: 12,
+              marginBottom: 16,
+              padding: 8
+            }}>
+              {allowedRoutes.map(route => (
+                <Card 
+                  key={route.id}
+                  view="outlined"
+                  style={{ 
+                    padding: 12,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8
+                  }}
+                >
+                  <Checkbox
+                    checked={true}
+                    disabled
+                    size="l"
+                  />
+                  <Stack gap={2}>
+                    <Text variant="subheader-2">{route.name}</Text>
+                    {route.description && (
+                      <Text color="secondary" variant="body-2">
+                        {route.description}
+                      </Text>
+                    )}
+                  </Stack>
+                </Card>
+              ))}
+            </div>
+            <Text 
+              variant="body-2" 
+              color="secondary" 
+              style={{ 
+                textAlign: 'center',
+                marginTop: 8
+              }}
             >
-              <Text variant="body-2">{route.description || route.description}</Text>
-            </Checkbox>
-          </Box>
-        ))}
-      </div>
-    </Box>
+              Всего разрешений: {allowedRoutes.length} из {routes.length}
+            </Text>
+          </>
+        ) : (
+          <Card 
+            view="outlined" 
+            style={{ 
+              padding: 16, 
+              textAlign: 'center',
+              backgroundColor: 'var(--g-color-base-float)'
+            }}
+          >
+            <Text variant="subheader-2" color="secondary">
+              У этой роли нет разрешений
+            </Text>
+          </Card>
+        )}
+
+ <div style={{ 
+          display: 'flex', 
+          gap: '12px', 
+          marginTop: '16px',
+          justifyContent: 'flex-end'
+        }}>
+          <motion.div 
+            whileHover={{ scale: 1.02 }} 
+            whileTap={{ scale: 0.98 }}
+          >
+            <Button
+              view="outlined"
+              type="button"
+              onClick={onClose}
+              size="l"
+              width="max"
+            >
+              Закрыть
+            </Button>
+          </motion.div>
+        </div>
+
+      </Box>
+    </BaseModalForm>
   );
 };
 
 export const RoleManagement = () => {
-  const [roles, setRoles] = useState<Array<Role>>([]);
-  const [routes, setRoutes] = useState<Array<Route>>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [routes, setRoutes] = useState<Route[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error,setError] = useState<string|null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [showPermissionsModal, setShowPermissionsModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const [rolesResponse,routesResponse] = await Promise.all([
-        api.get<Array<Role>>('/roles'),
-        api.get<Array<Route>>('/routes'),
+      setError(null);
+      const [rolesResponse, routesResponse] = await Promise.all([
+        api.get<Role[]>('/roles'),
+        api.get<Route[]>('/routes'),
       ]);
-      
-
-      console.log('Roles response:',rolesResponse);
-      console.log('Routes response:',routesResponse);
-
       setRoles(rolesResponse.data || []);
       setRoutes(routesResponse.data || []);
     } catch (error) {
@@ -65,13 +145,11 @@ export const RoleManagement = () => {
     }
   };
 
-
-  useEffect(()=>{
+  useEffect(() => {
     fetchData();
-  },[]);
+  }, []);
 
   const handleDelete = async (roleId: number) => {
-
     if (!window.confirm('Вы уверены, что хотите удалить эту роль?')) return;
 
     try {
@@ -81,7 +159,7 @@ export const RoleManagement = () => {
     } catch (error) {
       console.error('Error deleting role:', error);
       setError('Ошибка удаления роли');
-    }finally{
+    } finally {
       setIsLoading(false);
     }
   };
@@ -91,67 +169,99 @@ export const RoleManagement = () => {
     setShowPermissionsModal(true);
   };
 
-  return (
+  const filteredRoles = roles.filter(role => 
+    role.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-    <div className="role-management">
-      <Card view="raised" className="section-card">
-        <div className="section-header">
-          <Text variant="header-2">Управления ролями</Text>
-          <Button view="action" onClick={() => {
-            setEditingRole(null);
-            setShowForm(true);
-          }}
-          loading={isLoading}
-          >
-            Создать новое звание
-          </Button>
+  return (
+    <div style={{ height: '100%' }}>
+      <Card view="raised" style={{ 
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        overflow: 'hidden'
+      }}>
+        {/* Фиксированная верхняя часть */}
+        <div style={{ padding: 16, flexShrink: 0 }}>
+          <Text variant="header-2">Управление ролями</Text>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <TextInput 
+              placeholder="Поиск по названию..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ flexGrow: 1,marginTop:12 }}
+            />
+            <Button 
+              view="action" 
+              onClick={() => {
+                setEditingRole(null);
+                setShowForm(true);
+              }}
+              style={{marginTop:12}}
+              loading={isLoading}
+            >
+              Создать новую роль
+            </Button>
+          </div>
         </div>
 
-        {error && (
-          <div className="error-message">
-            <Text color="danger">{error}</Text>
-          </div>
-        )}
-
-        {isLoading ? (
-          <div className="loading-state">
+        {/* Прокручиваемая область с карточками */}
+        <div style={{ 
+          flexGrow: 1, 
+          overflowY: 'auto',
+          padding: '0 16px 16px'
+        }}>
+          {isLoading ? (
             <Text>Загрузка данных...</Text>
-          </div>
-        ) : (
-          <div className="roles-list">
-            {!roles || roles.length === 0 ? (
-              <div className="empty-state">
-                <Text>Нет доступных ролей</Text>
-              </div>
-            ) : (
-              roles.map(role => (
-                <Card key={role.id} view="filled" className="role-card">
-                  <div className="role-header">
-                    <Text variant="subheader-2">{role.name}</Text>
-                    {role.description && (
-                      <Text color="secondary">{role.description}</Text>
-                    )}
-                  </div>
-
-                  <div className="role-actions">
-                    <Button view="outlined" onClick={() => handleShowPermissions(role)} disabled={isLoading}>
-                      Просмотр разрешений
-                    </Button>
-                    <Button view="outlined" onClick={() => {
-                      setEditingRole(role);
-                      setShowForm(true);
-                    }}>
-                      Редактировать
-                    </Button>
-                    <Button view="outlined-danger" onClick={() => handleDelete(role.id)} loading={isLoading}>
-                      Удалить
-                    </Button>
+          ) : error ? (
+            <Text color="danger">{error}</Text>
+          ) : filteredRoles.length === 0 ? (
+            <Text>Роли не найдены</Text>
+          ) : (
+            <div style={{ display: 'grid', gap: 12 }}>
+              {filteredRoles.map(role => (
+                <Card key={role.id} view="outlined" style={{ padding: 12 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Stack gap={2}>
+                      <Text variant="subheader-2">{role.name}</Text>
+                      {role.description && (
+                        <Text color="secondary">{role.description}</Text>
+                      )}
+                    </Stack>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <Button 
+                        view="outlined" 
+                        size="m"
+                        onClick={() => handleShowPermissions(role)}
+                        disabled={isLoading}
+                      >
+                        Разрешения
+                      </Button>
+                      <Button 
+                        view="outlined" 
+                        size="m"
+                        onClick={() => {
+                          setEditingRole(role);
+                          setShowForm(true);
+                        }}
+                      >
+                        Редактировать
+                      </Button>
+                      <Button 
+                        view="outlined-danger" 
+                        size="m"
+                        onClick={() => handleDelete(role.id)}
+                        loading={isLoading}
+                      >
+                        Удалить
+                      </Button>
+                    </div>
                   </div>
                 </Card>
-              ))
-            )}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </Card>
 
       {showForm && (
@@ -169,22 +279,17 @@ export const RoleManagement = () => {
         />
       )}
 
-      <Modal open={showPermissionsModal} onOpenChange={() => setShowPermissionsModal(false)}>
-        <Card view="raised" className="permissions-modal-card">
-          {selectedRole && (
+      {showPermissionsModal && selectedRole && (
+        <Modal open={true} onOpenChange={() => setShowPermissionsModal(false)}>
+          <Card view="raised" style={{ width: 600, maxWidth: '90vw', padding: 16 }}>
             <PermissionsModal 
-              routes={routes || []} 
+              routes={routes} 
               role={selectedRole} 
+              onClose={() => setShowPermissionsModal(false)}
             />
-          )}
-          <div className="modal-footer">
-            <Button view="normal" onClick={() => setShowPermissionsModal(false)}>
-              Закрыть
-            </Button>
-          </div>
-        </Card>
-      </Modal>
+          </Card>
+        </Modal>
+      )}
     </div>
-
-    );
+  );
 };

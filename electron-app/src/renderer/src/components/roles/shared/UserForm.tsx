@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import api from "@api/api";
 import { Role } from "@api-types/role";
 import { User } from "@api-types/user";
+import { BaseModalForm } from "./BaseModalForm";
 
 interface UserFormProps {
   user?: User;
@@ -128,25 +129,11 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
   };
 
   return (
-    <Modal open={true} onClose={onClose}>
-      <div style={{ 
-        padding: '32px',
-        width: '500px',
-        maxWidth: '90vw',
-        margin: '0 auto'
-      }}>
-        <MotionDiv>
-          <Text 
-            variant="header-2" 
-            as="h2" 
-            style={{ 
-              marginBottom: '24px', 
-              textAlign: 'center',
-              color: 'var(--g-color-text-primary)'
-            }}
-          >
-            {user ? 'Редактировать члена экипажа' : 'Добавить нового члена экипажа'}
-          </Text>
+    <BaseModalForm
+      title={user ? 'Редактировать члена экипажа' : 'Добавить нового члена экипажа'}
+      onClose={onClose}
+      width={500}
+    >
           
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div style={{ marginBottom: '20px' }}>
@@ -199,25 +186,6 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
               />
             </div>
             
-            <div style={{ marginBottom: '20px' }}>
-              <div style={{ marginBottom: '8px' }}>
-                <Text variant="subheader-2">Статус</Text>
-              </div>
-              <Select
-                value={formData.statusId ? [formData.statusId] : []}
-                onUpdate={(value) => setFormData(prev => ({ ...prev, statusId: value[0] }))}
-                options={statuses.map(status => ({
-                  value: status.id.toString(),
-                  content: status.statusName
-                }))}
-                placeholder="Выберите статус"
-                size="l"
-                disabled={loading.data}
-                filterable
-                hasClear
-              />
-            </div>
-            
             <div style={{ 
               display: 'flex', 
               gap: '12px', 
@@ -257,8 +225,6 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
               </motion.div>
             </div>
           </form>
-        </MotionDiv>
-      </div>
-    </Modal>
+        </BaseModalForm>
   );
 };

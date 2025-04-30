@@ -2,6 +2,7 @@ import { Button, TextInput, Text, Card, User } from "@gravity-ui/uikit";
 import { useState, useEffect, CSSProperties } from "react";
 import { UserForm } from "@shared/UserForm";
 import {UserService} from "@services/userService";
+import { Stack } from "./admin-components/stack";
 import { type User as UserType} from '@api-types/user';
 import api from "@api/api";
 
@@ -18,7 +19,7 @@ export const UserManagement = () => {
       setIsLoading(true);
       setError(null);
       const response = await api.get<Array<UserType>>('/users');
-      setUsers(response.data || []); // Добавлено || [] на случай если data undefined
+      setUsers(response.data || []);
     } catch (err) {
       console.error('Error fetching users:', err);
       setError('Ошибка загрузки данных');
@@ -51,59 +52,69 @@ export const UserManagement = () => {
   );
 
   return (
-    <OutterContainer>
-      <Card view="raised" className="section-card">
-        <div className="section-header" style={{padding:12}}>
+    <div style={{height:'100%'}}>
+      <Card view="raised" className="section-card" style={{ display: 'flex', flexDirection: 'column', height: '100%',overflow:'hidden' }}>
+        {/* Фиксированная верхняя часть */}
+        <div style={{ padding: 12, flexShrink: 0 }}>
           <Text variant="header-2">Состав экипажа</Text>
-          <div className="controls" style={{marginTop:5}}>
+          <div style={{ marginTop: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
             <TextInput 
               placeholder="Поиск по имени..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ flexGrow: 1 }}
             />
-            <Button view="action" onClick={() => {
-              setEditingUser(undefined);
-              setShowForm(true);
-            }} style={{marginTop:12}}>
+            <Button 
+              view="action" 
+              onClick={() => {
+                setEditingUser(undefined);
+                setShowForm(true);
+              }}
+            >
               Добавить члена экипажа
             </Button>
           </div>
         </div>
 
-        {isLoading ? (
-          <Text>Загрузка данных...</Text>
-        ) : error ? (
-          <Text color="danger">{error}</Text>
-        ) : filteredUsers.length === 0 ? (
-          <Text>Пользователи не найдены</Text>
-        ) : (
-          <div className="users-grid" style={{margin:12}}>
-            {filteredUsers.map(user => (
-              <Card key={user.id} view="outlined" className="user-card" style={{marginBottom:6}}>
-                <div className="user-info" style={{margin:12}}>
-                  <User
-                    name={user.username}
-                    avatar={user.avatar}
-                    size="xl"
-                  />
-                  <Stack>
-                    <Text variant="subheader-2">{user.username}</Text>
-                    <Text color="secondary">Роль: {user.role?.name || 'Не назначено'}</Text>
-                    <Text color="hint">{user.status?.statusName || 'Статус не указан'}</Text>
-                  </Stack>
-                </div>
-                <div className="user-actions" style={{margin:12}}>
-                  <Button view="outlined" onClick={() => handleEdit(user)} style={{marginRight:7}}>
-                    Редактировать
-                  </Button>
-                  <Button view="outlined-danger" onClick={() => handleDelete(user.id)}>
-                    Списать
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
+        {/* Прокручиваемая область с карточками */}
+        <div style={{ 
+          flexGrow: 1, 
+          overflowY: 'auto',
+          padding: 12,
+          marginTop: 8
+        }}>
+          {isLoading ? (
+            <Text>Загрузка данных...</Text>
+          ) : error ? (
+            <Text color="danger">{error}</Text>
+          ) : filteredUsers.length === 0 ? (
+            <Text>Пользователи не найдены</Text>
+          ) : (
+            <div style={{ display: 'grid', gap: 12 }}>
+              {filteredUsers.map(user => (
+                <Card key={user.id} view="outlined" style={{ padding: 12 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      
+                      <Stack gap={4}>
+                        <Text variant="subheader-2">{user.username}</Text>
+                        <Text color="secondary">{user.role?.name || 'Роль не назначена'}</Text>
+                      </Stack>
+                    </div>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <Button view="outlined" size="m" onClick={() => handleEdit(user)}>
+                        Редактировать
+                      </Button>
+                      <Button view="outlined-danger" size="m" onClick={() => handleDelete(user.id)}>
+                        Списать
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
       </Card>
 
       {showForm && (
@@ -119,28 +130,17 @@ export const UserManagement = () => {
           }}
         />
       )}
-    </OutterContainer>
+    </div>
   );
 };
 
-interface OutterContainerProps{
-  children:React.ReactNode;
-  style?:CSSProperties;
+interface OutterContainerProps {
+  children: React.ReactNode;
+  style?: CSSProperties;
 }
 
-interface StackProps{
-  children:React.ReactNode;
-  gap?:number;
-}
-
-const Stack = ({children,gap=1}:StackProps) => (
-  <div style={{display:'flex',flexDirection:'column',gap:`${gap}px`}}>
+export const OutterContainer = ({ children, style }: OutterContainerProps) => (
+  <div style={{ height: '100%', ...style }}>
     {children}
   </div>
-)
-
-const OutterContainer = ({children}:OutterContainerProps) =>(
-  <div>
-    {children}
-  </div>
-)
+);
