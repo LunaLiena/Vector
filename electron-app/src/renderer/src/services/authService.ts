@@ -1,26 +1,46 @@
 import api from '@api/api';
+import { UserService } from '@services/userService';
+
+// Получаем хранилища напрямую
 import { useAuthStore } from '@store/authStore';
 import { useUserStore } from '@store/userStore';
-import { UserService } from '@services/userService';
-import { LoginResponse } from '../types/api';
-
 
 export const authService = {
-    async login(credentials: { username: string; password: string }): Promise<LoginResponse> {
+
+    async login(credentials: { username: string; password: string }) {
         try {
             const response = await api.post('/login', credentials);
-            const { access_token, refresh_token, role } = response.data;
+            const { access_token, refresh_token } = response.data; // Получаем роль сразу из ответа
 
-            useAuthStore.getState().login(access_token, refresh_token, role);
-            const userData = await UserService.getCurrentUser();
 
+            const userResponse = await api.get('/users/me', {
+                headers: {
+                    Authorization: `Bearer ${access_token}`
+                }
+            });
+
+            const userData = userResponse.data;
+            console.log('Full user data:', userData);
+
+            if (!userData.role) {
+                throw new Error('Role information not available in user data');
+            }
+
+            api.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+
+            useAuthStore.getState().login(access_token, refresh_token, userData.role);
             useUserStore.getState().setUser({
                 username: userData.username,
-                role: userData.role || null,
+                role: userData.role,
                 accessToken: access_token,
-                refreshToken: refresh_token,
+                refreshToken: refresh_token
             });
-            return response.data;
+
+
+            return {
+                ...response.data,
+                role: userData.role
+            };// Возвращаем роль в ответе
         } catch (error) {
             console.error('Login failed:', error);
             throw error;
@@ -28,6 +48,7 @@ export const authService = {
     },
 
     logout() {
+        localStorage.clear();
         useAuthStore.getState().logout();
     }
 }

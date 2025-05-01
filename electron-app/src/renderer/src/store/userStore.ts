@@ -15,7 +15,7 @@ const safeJsonParse = <T>(value: string | null, fallback: T): T => {
     }
 }
 
-export const useUserStore = create<UserState>((set) => ({
+export const userStore = create<UserState>((set) => ({
     username: localStorage.getItem('username') || '',
     role: safeJsonParse(localStorage.getItem('role'), null),
     accessToken: localStorage.getItem('accessToken') || '',
@@ -42,3 +42,6 @@ export const useUserStore = create<UserState>((set) => ({
         });
     }
 }));
+
+// Экспортируем и хук для использования в компонентах
+export const useUserStore = userStore;

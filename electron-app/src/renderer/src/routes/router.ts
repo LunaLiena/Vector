@@ -1,22 +1,27 @@
 import { createRouter } from "@tanstack/react-router";
-import {routeTree} from '@renderer/routes/routeTree.gen';
+import { routeTree } from '@renderer/routes/routeTree.gen';
 import type { MyRouterContext } from "@renderer/types/router";
+import { authStore } from "@store/authStore";
 
-const defaultContext:MyRouterContext = {
-  auth:{
-    isAuth:false,
-    role:undefined,
-  },
-}
+// Функция безопасного получения роли из localStorage
+const getInitialRole = () => {
+  const roleJson = localStorage.getItem('role');
+  return roleJson ? JSON.parse(roleJson) : null;
+};
 
 export const router = createRouter({
-    routeTree,
-    defaultPreload:'intent',
-    context:defaultContext,
+  routeTree,
+  defaultPreload: 'intent',
+  context: {
+    auth: {
+      isAuth: !!localStorage.getItem('accessToken'),
+      role: getInitialRole(),
+    },
+  },
 });
 
-declare module '@tanstack/react-router'{
-    interface Register{
-        router:typeof router;
-    }
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router;
+  }
 }

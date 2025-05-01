@@ -1,4 +1,4 @@
-import { Role } from "./role";
+import { Role } from "@api-types/role";
 
 export interface User {
     username: string;

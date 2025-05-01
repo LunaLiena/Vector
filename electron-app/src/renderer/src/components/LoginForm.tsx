@@ -26,9 +26,11 @@ export const LoginForm = () =>{
 
     try{
 
-      const {access_token,refresh_token,role} = await authService.login(credentials);
+      const response = await authService.login(credentials);
 
-        login(access_token,refresh_token,role);
+      if(!response.role){
+        throw new Error('Role information not available');
+      }
 
         add({
             name:'login-success',
@@ -39,9 +41,9 @@ export const LoginForm = () =>{
         });
 
         router.navigate({
-            to:getRouteByRole(role.name),
+            to:getRouteByRole(response.role.name),
             replace:true,
-        });
+        })
 
     }catch(err){
         setError('Неверные данные или проблемы с сервером');
