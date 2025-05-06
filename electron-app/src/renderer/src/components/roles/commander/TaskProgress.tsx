@@ -1,23 +1,23 @@
 
 export const TaskProgress = () =>{
 
-    return(
-        <div>
-            <p>all task progresses </p>
+  return(
+    <div>
+      <p>all task progresses </p>
 
-            <div>
-                <p>
-                    <div>
+      <div>
+        <p>
+          <div>
                         name
-                    </div>
-                    <div>
+          </div>
+          <div>
                         progress
-                    </div>
-                    <div>
+          </div>
+          <div>
                         etc.
-                    </div>
-                </p>
-            </div>
-        </div>
-    )
-}
+          </div>
+        </p>
+      </div>
+    </div>
+  );
+};

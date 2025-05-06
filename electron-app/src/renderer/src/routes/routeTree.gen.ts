@@ -15,7 +15,7 @@ const LoginRoute = createRoute({
   component: LoginForm,
   beforeLoad: ({ context }) => {
     if (context.auth.isAuth && context.auth.role?.name) {
-      console.log('context.auth.isAuth (from LoginRoute):', context.auth.isAuth)
+      console.log('context.auth.isAuth (from LoginRoute):', context.auth.isAuth);
       throw redirect({ to: getRouteByRole(context.auth.role?.name), replace: true });
     }
   }
@@ -30,7 +30,7 @@ const AdminRoute = createRoute({
       throw redirect({ to: '/' });
     }
   }
-})
+});
 
 const CommanderRoute = createRoute({
   getParentRoute: () => RootRoute,
@@ -81,12 +81,12 @@ const getRouteByRole = (role?: string) => {
   if (!role) return '/';
 
   switch (role) {
-    case 'Центр Управления Полётами': return '/admin';
-    case 'Командир Экипажа': return '/commander';
-    case 'Бортовой Инженер': return '/engineer';
-    case 'Космонавт': return '/astronaut';
-    case 'Наземный Персонал': return '/ground';
-    default: return '/';
+  case 'Центр Управления Полётами': return '/admin';
+  case 'Командир Экипажа': return '/commander';
+  case 'Бортовой Инженер': return '/engineer';
+  case 'Космонавт': return '/astronaut';
+  case 'Наземный Персонал': return '/ground';
+  default: return '/';
   }
 };
 

@@ -1,8 +1,8 @@
-import { Button, TextInput, Text, Card, Modal, Box } from "@gravity-ui/uikit";
-import { useState, useEffect } from "react";
-import { PermissionForm } from "@shared/PermissionForm";
-import api from "@api/api";
-import { Stack } from "./admin-components/stack";
+import { Button, TextInput, Text, Card, Modal, Box } from '@gravity-ui/uikit';
+import { useState, useEffect } from 'react';
+import { PermissionForm } from '@shared/PermissionForm';
+import api from '@api/api';
+import { Stack } from './admin-components/stack';
 
 export interface Route {
     id: number;

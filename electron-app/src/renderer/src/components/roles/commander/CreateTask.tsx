@@ -1,9 +1,9 @@
 
 export const CreateTask = () =>{
 
-    return(
-        <div>
+  return(
+    <div>
             create task page
-        </div>
-    )
-}
+    </div>
+  );
+};

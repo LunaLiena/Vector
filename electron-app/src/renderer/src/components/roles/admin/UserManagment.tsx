@@ -1,10 +1,10 @@
-import { Button, TextInput, Text, Card, User } from "@gravity-ui/uikit";
-import { useState, useEffect, CSSProperties } from "react";
-import { UserForm } from "@shared/UserForm";
-import {UserService} from "@services/userService";
-import { Stack } from "./admin-components/stack";
+import { Button, TextInput, Text, Card, User } from '@gravity-ui/uikit';
+import { useState, useEffect, CSSProperties } from 'react';
+import { UserForm } from '@shared/UserForm';
+import {UserService} from '@services/userService';
+import { Stack } from './admin-components/stack';
 import { type User as UserType} from '@api-types/user';
-import api from "@api/api";
+import api from '@api/api';
 
 export const UserManagement = () => {
   const [users, setUsers] = useState<Array<UserType>>([]);

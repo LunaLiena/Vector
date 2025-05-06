@@ -1,10 +1,10 @@
-import { CSSProperties, ReactNode, useState, useEffect } from "react";
-import { Button, TextInput, Label, Text, Select, Modal, useToaster } from "@gravity-ui/uikit";
+import { CSSProperties, ReactNode, useState, useEffect } from 'react';
+import { Button, TextInput, Label, Text, Select, Modal, useToaster } from '@gravity-ui/uikit';
 import { motion } from 'framer-motion';
-import api from "@api/api";
-import { Role } from "@api-types/role";
-import { User } from "@api-types/user";
-import { BaseModalForm } from "./BaseModalForm";
+import api from '@api/api';
+import { Role } from '@api-types/role';
+import { User } from '@api-types/user';
+import { BaseModalForm } from './BaseModalForm';
 
 interface UserFormProps {
   user?: User;
@@ -135,96 +135,96 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
       width={500}
     >
           
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div style={{ marginBottom: '20px' }}>
-              <div style={{ marginBottom: '8px' }}>
-                <Text variant="subheader-2">Имя пользователя</Text>
-              </div>
-              <TextInput
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                placeholder="Введите имя пользователя"
-                size="l"
-                disabled={loading.data}
-                hasClear
-              />
-            </div>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div style={{ marginBottom: '20px' }}>
+          <div style={{ marginBottom: '8px' }}>
+            <Text variant="subheader-2">Имя пользователя</Text>
+          </div>
+          <TextInput
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            placeholder="Введите имя пользователя"
+            size="l"
+            disabled={loading.data}
+            hasClear
+          />
+        </div>
             
-            <div style={{ marginBottom: '20px' }}>
-              <div style={{ marginBottom: '8px' }}>
-                <Text variant="subheader-2">Пароль</Text>
-              </div>
-              <TextInput
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Введите пароль"
-                size="l"
-                disabled={loading.data}
-                hasClear
-              />
-            </div>
+        <div style={{ marginBottom: '20px' }}>
+          <div style={{ marginBottom: '8px' }}>
+            <Text variant="subheader-2">Пароль</Text>
+          </div>
+          <TextInput
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Введите пароль"
+            size="l"
+            disabled={loading.data}
+            hasClear
+          />
+        </div>
             
-            <div style={{ marginBottom: '20px' }}>
-              <div style={{ marginBottom: '8px' }}>
-                <Text variant="subheader-2">Звание</Text>
-              </div>
-              <Select
-                value={formData.roleId ? [formData.roleId] : []}
-                onUpdate={(value) => setFormData(prev => ({ ...prev, roleId: value[0] }))}
-                options={roles.map(role => ({
-                  value: role.id.toString(),
-                  content: role.name
-                }))}
-                placeholder="Выберите звание"
-                size="l"
-                disabled={loading.data}
-                filterable
-                hasClear
-              />
-            </div>
+        <div style={{ marginBottom: '20px' }}>
+          <div style={{ marginBottom: '8px' }}>
+            <Text variant="subheader-2">Звание</Text>
+          </div>
+          <Select
+            value={formData.roleId ? [formData.roleId] : []}
+            onUpdate={(value) => setFormData(prev => ({ ...prev, roleId: value[0] }))}
+            options={roles.map(role => ({
+              value: role.id.toString(),
+              content: role.name
+            }))}
+            placeholder="Выберите звание"
+            size="l"
+            disabled={loading.data}
+            filterable
+            hasClear
+          />
+        </div>
             
-            <div style={{ 
-              display: 'flex', 
-              gap: '12px', 
-              marginTop: '16px'
-            }}>
-              <motion.div 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.98 }} 
-                style={{ flex: 1 }}
-              >
-                <Button
-                  view="outlined"
-                  type="button"
-                  onClick={onClose}
-                  size="l"
-                  width="max"
-                  disabled={loading.submit}
-                >
+        <div style={{ 
+          display: 'flex', 
+          gap: '12px', 
+          marginTop: '16px'
+        }}>
+          <motion.div 
+            whileHover={{ scale: 1.02 }} 
+            whileTap={{ scale: 0.98 }} 
+            style={{ flex: 1 }}
+          >
+            <Button
+              view="outlined"
+              type="button"
+              onClick={onClose}
+              size="l"
+              width="max"
+              disabled={loading.submit}
+            >
                   Отмена
-                </Button>
-              </motion.div>
+            </Button>
+          </motion.div>
               
-              <motion.div 
-                whileHover={{ scale: 1.02 }} 
-                whileTap={{ scale: 0.98 }} 
-                style={{ flex: 1 }}
-              >
-                <Button
-                  view="action"
-                  type="submit"
-                  loading={loading.submit}
-                  size="l"
-                  width="max"
-                >
-                  {user ? 'Сохранить' : 'Создать'}
-                </Button>
-              </motion.div>
-            </div>
-          </form>
-        </BaseModalForm>
+          <motion.div 
+            whileHover={{ scale: 1.02 }} 
+            whileTap={{ scale: 0.98 }} 
+            style={{ flex: 1 }}
+          >
+            <Button
+              view="action"
+              type="submit"
+              loading={loading.submit}
+              size="l"
+              width="max"
+            >
+              {user ? 'Сохранить' : 'Создать'}
+            </Button>
+          </motion.div>
+        </div>
+      </form>
+    </BaseModalForm>
   );
 };

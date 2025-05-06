@@ -8,4 +8,4 @@ export const Stack = ({children,gap=1}:StackProps) => (
   <div style={{display:'flex',flexDirection:'column',gap:`${gap}px`}}>
     {children}
   </div>
-)
+);

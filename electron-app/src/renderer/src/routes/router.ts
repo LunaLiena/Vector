@@ -1,7 +1,7 @@
-import { createRouter } from "@tanstack/react-router";
+import { createRouter } from '@tanstack/react-router';
 import { routeTree } from '@renderer/routes/routeTree.gen';
-import type { MyRouterContext } from "@renderer/types/router";
-import { authStore } from "@store/authStore";
+import type { MyRouterContext } from '@renderer/types/router';
+import { authStore } from '@store/authStore';
 
 // Функция безопасного получения роли из localStorage
 const getInitialRole = () => {

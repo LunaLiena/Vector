@@ -1,5 +1,5 @@
 // shared/BaseModalForm.tsx
-import { Text, Box, Button, Card, Modal } from "@gravity-ui/uikit";
+import { Text, Box, Button, Card, Modal } from '@gravity-ui/uikit';
 import { motion } from 'framer-motion';
 
 interface BaseModalFormProps {
@@ -34,19 +34,19 @@ export const BaseModalForm = ({
         margin: '0 auto'
       }}>
         <MotionDiv>
-            <Text 
-              variant="header-2" 
-              as="h2" 
-              style={{ 
-                marginBottom: 24, 
-                textAlign: 'center',
-                color: 'var(--g-color-text-primary)'
-              }}
-            >
-              {title}
-            </Text>
+          <Text 
+            variant="header-2" 
+            as="h2" 
+            style={{ 
+              marginBottom: 24, 
+              textAlign: 'center',
+              color: 'var(--g-color-text-primary)'
+            }}
+          >
+            {title}
+          </Text>
             
-            {children}
+          {children}
         </MotionDiv>
       </div>
     </Modal>

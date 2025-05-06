@@ -1,31 +1,82 @@
-import tseslint from '@electron-toolkit/eslint-config-ts'
-import eslintConfigPrettier from '@electron-toolkit/eslint-config-prettier'
-import eslintPluginReact from 'eslint-plugin-react'
-import eslintPluginReactHooks from 'eslint-plugin-react-hooks'
-import eslintPluginReactRefresh from 'eslint-plugin-react-refresh'
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import globals from 'globals';
 
 export default tseslint.config(
-  { ignores: ['**/node_modules', '**/dist', '**/out'] },
-  tseslint.configs.recommended,
-  eslintPluginReact.configs.flat.recommended,
-  eslintPluginReact.configs.flat['jsx-runtime'],
+  // Базовые настройки
   {
-    settings: {
-      react: {
-        version: 'detect'
+    ignores: ['**/node_modules', '**/dist', '**/out'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node
       }
     }
   },
+
+  // Настройки ESLint
+  eslint.configs.recommended,
+
+  // Настройки TypeScript
+  ...tseslint.configs.recommended,
+
+  // Настройки React
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['**/*.{tsx,jsx}'],
     plugins: {
-      'react-hooks': eslintPluginReactHooks,
-      'react-refresh': eslintPluginReactRefresh
+      react: reactPlugin
+    },
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true
+        }
+      }
     },
     rules: {
-      ...eslintPluginReactHooks.configs.recommended.rules,
-      ...eslintPluginReactRefresh.configs.vite.rules
+      ...reactPlugin.configs.recommended.rules,
+      ...reactPlugin.configs['jsx-runtime'].rules
     }
   },
-  eslintConfigPrettier
-)
+
+  // React Hooks
+  {
+    files: ['**/*.{tsx,jsx}'],
+    plugins: {
+      'react-hooks': reactHooks
+    },
+    rules: reactHooks.configs.recommended.rules
+  },
+
+  // React Refresh (для Vite)
+  {
+    files: ['**/*.{tsx,jsx}'],
+    plugins: {
+      'react-refresh': reactRefresh
+    },
+    rules: reactRefresh.configs.vite.rules
+  },
+
+  // Общие правила для TypeScript
+  {
+    files: ['**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      'indent': ['error', 2],
+      'quotes': ['error', 'single'],
+      'semi': ['error', 'always']
+    }
+  },
+
+  // Исключения для конфига Vite
+  {
+    files: ['electron.vite.config.ts'],
+    rules: {
+      'no-undef': 'off'
+    }
+  }
+);

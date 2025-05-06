@@ -1,5 +1,5 @@
-import { CSSProperties, useState, useEffect } from "react";
-import { Button, TextInput, Text, Modal, useToaster } from "@gravity-ui/uikit";
+import { CSSProperties, useState, useEffect } from 'react';
+import { Button, TextInput, Text, Modal, useToaster } from '@gravity-ui/uikit';
 import { motion } from 'framer-motion';
 import api from '@api/api';
 

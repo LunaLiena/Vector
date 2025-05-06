@@ -1,6 +1,6 @@
-import { CSSProperties,ReactNode } from "react";
+import { CSSProperties,ReactNode } from 'react';
 import {motion} from 'framer-motion';
-import { fadeVariants,transition } from "./animation";
+import { fadeVariants,transition } from './animation';
 
 interface InterfaceProviderProps{
     children:ReactNode;
@@ -11,35 +11,35 @@ interface InterfaceProviderProps{
 }
 
 export const InterfaceProvider = ({
-    children,
-    style = {},
-    fullHeight = true,
-    gap = '16px'
+  children,
+  style = {},
+  fullHeight = true,
+  gap = '16px'
 }:InterfaceProviderProps)=>{
-    const baseStyles: CSSProperties = {
-        width: '98vw',
-        marginTop:'12px',
-        margin: '0 auto', 
-        height: fullHeight ? '100vh' : 'auto',
-        minHeight: fullHeight ? '100vh' : undefined,
-        display: 'flex',
-        flexDirection: 'column',
-        boxSizing: 'border-box',
-        gap: gap,
-        ...style
-    };
+  const baseStyles: CSSProperties = {
+    width: '98vw',
+    marginTop:'12px',
+    margin: '0 auto', 
+    height: fullHeight ? '100vh' : 'auto',
+    minHeight: fullHeight ? '100vh' : undefined,
+    display: 'flex',
+    flexDirection: 'column',
+    boxSizing: 'border-box',
+    gap: gap,
+    ...style
+  };
 
   return (
     <motion.div 
-    className="interface-provider" 
-    style={baseStyles} 
-    initial="initial" 
-    animate="animate" 
-    exit="exit" 
-    variants={fadeVariants} 
-    transition={transition}
+      className="interface-provider" 
+      style={baseStyles} 
+      initial="initial" 
+      animate="animate" 
+      exit="exit" 
+      variants={fadeVariants} 
+      transition={transition}
     >
       {children}
     </motion.div>
   );
-} 
+}; 

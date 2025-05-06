@@ -1,7 +1,7 @@
-import { Button, Icon } from "@gravity-ui/uikit";
-import { useAuthStore } from "@store/authStore";
-import { motion } from "framer-motion";
-import { transition } from "./animation";
+import { Button, Icon } from '@gravity-ui/uikit';
+import { useAuthStore } from '@store/authStore';
+import { motion } from 'framer-motion';
+import { transition } from './animation';
 import {ArrowRightFromSquare} from '@gravity-ui/icons';
 
 
@@ -31,30 +31,30 @@ export const HeaderButton = ({tabs,activeTab,onTabChange}:HeaderButtonProps)=>{
           transition={transition}
         >
 
-        <Button
-          key={tab.id}
-          view={activeTab === tab.id ? 'normal' : 'flat'}
-          size="l"
-          onClick={() => onTabChange(tab.id)}
-        >
-          {tab.text}
-        </Button>
+          <Button
+            key={tab.id}
+            view={activeTab === tab.id ? 'normal' : 'flat'}
+            size="l"
+            onClick={() => onTabChange(tab.id)}
+          >
+            {tab.text}
+          </Button>
         </motion.div>
 
       ))}
       <motion.div whileHover={{scale:1.03}} whileTap={{scale:0.97}} transition={transition}>
         <Button 
-        size="l" 
-        onClick={logout} 
-        view="flat" 
-        pin="round-round" 
-        style={{marginLeft:'auto'}}
+          size="l" 
+          onClick={logout} 
+          view="flat" 
+          pin="round-round" 
+          style={{marginLeft:'auto'}}
         >
-        <Icon data={ArrowRightFromSquare} />
+          <Icon data={ArrowRightFromSquare} />
         Выход
         
         </Button>
       </motion.div>
     </div>
-  )
-}
+  );
+};

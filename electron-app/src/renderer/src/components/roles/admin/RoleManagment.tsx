@@ -1,12 +1,12 @@
-import { Button, Text, Card, Checkbox, Modal, Box, TextInput } from "@gravity-ui/uikit";
-import { useState, useEffect } from "react";
-import { RoleForm } from "@shared/RoleForm";
+import { Button, Text, Card, Checkbox, Modal, Box, TextInput } from '@gravity-ui/uikit';
+import { useState, useEffect } from 'react';
+import { RoleForm } from '@shared/RoleForm';
 import api from '@api/api';
 import { Route } from '@api-types/route';
-import { Role } from "@api-types/role";
-import { Stack } from "./admin-components/stack";
-import { BaseModalForm } from "../shared/BaseModalForm";
-import { motion } from "framer-motion";
+import { Role } from '@api-types/role';
+import { Stack } from './admin-components/stack';
+import { BaseModalForm } from '../shared/BaseModalForm';
+import { motion } from 'framer-motion';
 interface ModalWindowProps {
   routes: Route[];
   role: Role;
@@ -89,7 +89,7 @@ const PermissionsModal = ({ routes, role, onClose }: ModalWindowProps) => {
           </Card>
         )}
 
- <div style={{ 
+        <div style={{ 
           display: 'flex', 
           gap: '12px', 
           marginTop: '16px',

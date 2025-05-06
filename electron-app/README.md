@@ -6,29 +6,19 @@ An Electron application with React and TypeScript
 
 - [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
-## Project Setup
+## Code Quality Tools
 
-### Install
-
-```bash
-$ npm install
-```
-
-### Development
+### Linting & Formatting
 
 ```bash
-$ npm run dev
-```
+# Check for linting errors
+$ npm run lint
 
-### Build
+# Automatically fix linting errors
+$ npm run lint:fix
 
-```bash
-# For windows
-$ npm run build:win
+# Format code with Prettier
+$ npm run format
 
-# For macOS
-$ npm run build:mac
-
-# For Linux
-$ npm run build:linux
-```
+# Combined fix & format (add this to package.json scripts if needed)
+$ npm run fix-all

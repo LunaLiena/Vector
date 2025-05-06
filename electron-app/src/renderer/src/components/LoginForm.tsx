@@ -1,9 +1,9 @@
-import { CSSProperties, ReactNode, useState } from "react";
+import { CSSProperties, ReactNode, useState } from 'react';
 import { useAuthStore } from '@store/authStore';
-import { useRouter } from "@tanstack/react-router";
+import { useRouter } from '@tanstack/react-router';
 import {motion} from 'framer-motion';
-import { Button,TextInput,Text,Card,useToaster } from "@gravity-ui/uikit";
-import { authService } from "@services/authService";
+import { Button,TextInput,Text,Card,useToaster } from '@gravity-ui/uikit';
+import { authService } from '@services/authService';
 // import {Lock} from '@gravity-ui/icons';
 
 export const LoginForm = () =>{
@@ -32,122 +32,122 @@ export const LoginForm = () =>{
         throw new Error('Role information not available');
       }
 
-        add({
-            name:'login-success',
-            title:'Успешный вход',
-            content:'Вы успешно авторизировались в системе',
-            theme:'success',
-            autoHiding:5000,
-        });
+      add({
+        name:'login-success',
+        title:'Успешный вход',
+        content:'Вы успешно авторизировались в системе',
+        theme:'success',
+        autoHiding:5000,
+      });
 
-        router.navigate({
-            to:getRouteByRole(response.role.name),
-            replace:true,
-        })
+      router.navigate({
+        to:getRouteByRole(response.role.name),
+        replace:true,
+      });
 
     }catch(err){
-        setError('Неверные данные или проблемы с сервером');
-          add({
+      setError('Неверные данные или проблемы с сервером');
+      add({
         name: 'login-error',
         title: 'Ошибка входа',
         content: 'Проверьте правильность введенных данных',
         theme: 'danger',
         autoHiding: 5000,
       });
-        console.error('Login error:',err)
+      console.error('Login error:',err);
     }finally{
-        setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
   const getRouteByRole = (role:string) =>{
-    console.log('Current role:',role)
+    console.log('Current role:',role);
     switch(role){
-      case 'Центр Управления Полётами': return '/admin';
-      case 'Командир Экипажа': return '/commander';
-      case 'Бортовой Инженер': return '/engineer';
-      case 'Космонавт': return '/astronaut';
-      case 'Наземный Персонал': return '/ground';
-      default: return '/';
+    case 'Центр Управления Полётами': return '/admin';
+    case 'Командир Экипажа': return '/commander';
+    case 'Бортовой Инженер': return '/engineer';
+    case 'Космонавт': return '/astronaut';
+    case 'Наземный Персонал': return '/ground';
+    default: return '/';
     }
-  }
+  };
 
   const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>) =>{
     const {id,value} = e.target;
     setCredentials(prev=>({
       ...prev,
       [id]:value
-    }))
-  }
+    }));
+  };
 
   return(
-      <MotionDiv>
-        <Card view="raised" className="p-6" style={{padding:'32px'}}>
-          <Text variant="header-2" className="mb-6 text-center">
+    <MotionDiv>
+      <Card view="raised" className="p-6" style={{padding:'32px'}}>
+        <Text variant="header-2" className="mb-6 text-center">
             Вход в систему управления
-          </Text>
+        </Text>
           
-          {error && (
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
-              className="mb-4"
-            >
-              <Text color="danger">{error}</Text>
-            </motion.div>
-          )}
+        {error && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            className="mb-4"
+          >
+            <Text color="danger">{error}</Text>
+          </motion.div>
+        )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Container>
-              <CustomLabel className="block text-sm font-medium text-gray-700 mb-2 tracking-wide">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Container>
+            <CustomLabel className="block text-sm font-medium text-gray-700 mb-2 tracking-wide">
                 Имя пользователя
-              </CustomLabel>
-              <TextInput
-                id="username"
-                type="text"
-                value={credentials.username}
-                onChange={handleInputChange}
-                placeholder="Введите имя пользователя"
-                size="l"
-              />
-            </Container>
+            </CustomLabel>
+            <TextInput
+              id="username"
+              type="text"
+              value={credentials.username}
+              onChange={handleInputChange}
+              placeholder="Введите имя пользователя"
+              size="l"
+            />
+          </Container>
             
-            <Container>
-              <CustomLabel className="mb-1">
+          <Container>
+            <CustomLabel className="mb-1">
                 Пароль
-              </CustomLabel>
-              <TextInput
-                id="password"
-                type="password"
-                value={credentials.password}
-                onChange={handleInputChange}
-                placeholder="Введите пароль"
-                size="l"
+            </CustomLabel>
+            <TextInput
+              id="password"
+              type="password"
+              value={credentials.password}
+              onChange={handleInputChange}
+              placeholder="Введите пароль"
+              size="l"
                 
-              />
-            </Container>
+            />
+          </Container>
             
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <Button
+              view="action"
+              type="submit"
+              loading={isLoading}
+              size="l"
+              width="max"
+              pin="round-round"
+              style={{marginTop:7}}
             >
-              <Button
-                view="action"
-                type="submit"
-                loading={isLoading}
-                size="l"
-                width="max"
-                pin="round-round"
-                style={{marginTop:7}}
-              >
-                {isLoading ? 'Вход...' : 'Войти'}
-              </Button>
-            </motion.div>
-          </form>
-        </Card>
-      </MotionDiv>
-  )
-}
+              {isLoading ? 'Вход...' : 'Войти'}
+            </Button>
+          </motion.div>
+        </form>
+      </Card>
+    </MotionDiv>
+  );
+};
 
 interface CustomLabelProps{
   children:ReactNode;
@@ -155,13 +155,13 @@ interface CustomLabelProps{
   className?:string;
 }
 
-const CustomLabel= ({children,htmlFor,className = ""}:CustomLabelProps) =>{
+const CustomLabel= ({children,htmlFor,className = ''}:CustomLabelProps) =>{
   return(
     <label htmlFor={htmlFor} className={`block text-sm font-medium text-gray-700 mb-2 tracking-wide ${className}`} style={{paddingTop:12}}>
       {children}
     </label>
-  )
-}
+  );
+};
 
 interface MotionDivProps{
   style?:CSSProperties;
@@ -171,15 +171,15 @@ interface MotionDivProps{
 const MotionDiv = ({style,children}:MotionDivProps) =>{
   return(
     <motion.div style={style} 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-md mx-auto"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-md mx-auto"
     >
       {children}
     </motion.div>
-  )
-}
+  );
+};
 
 interface ContainerProps{
   children:ReactNode;
@@ -189,4 +189,4 @@ const Container = ({children}:ContainerProps)=>(
   <div style={{marginTop:12}}>
     {children}
   </div>
-)
+);

@@ -1,10 +1,10 @@
-import { resolve } from 'path'
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
-import react from '@vitejs/plugin-react'
-import { env } from 'process'
-import vike from 'vike/plugin'
+import { resolve } from 'path';
+import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
+import react from '@vitejs/plugin-react';
+import { env } from 'process';
+import vike from 'vike/plugin';
 
-const backendURl = env.VITE_APP_BACKEND_URL || 'http://127.0.0.1:3000'
+const backendURl = env.VITE_APP_BACKEND_URL || 'http://127.0.0.1:3000';
 
 export default defineConfig({
   main: {
@@ -57,6 +57,6 @@ export default defineConfig({
     }
   },
 
-})
+});
 
 
