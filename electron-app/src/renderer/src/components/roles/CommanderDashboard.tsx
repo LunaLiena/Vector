@@ -1,32 +1,47 @@
 // src/components/roles/CommanderDashboard.tsx
-import { motion } from 'framer-motion';
+
+import { useState } from "react";
+import {CreateTask} from '@role-components/commander/CreateTask'
+import {CommandList} from '@role-components/commander/CommandList'
+import {ManageTask} from '@role-components/commander/ManageTask'
+import { ViewTaskComments } from "@role-components/commander/ViewTaskComments";
+
+import {InterfaceProvider} from '@shared/InterfaceProvider';
+import { BodyContent } from "@shared/BodyContent";
+import {Header} from '@shared/Header';
+
 
 export const CommanderDashboard = () => {
+  
+  const [activeTab,setActiveTab] = useState('create_task');
+
+  const renderTab = () =>{
+    switch(activeTab){
+    case 'create_task':return <CreateTask />
+    case 'view-command-list':return <CommandList />
+    case 'task-manage':return <ManageTask />
+    case 'view-task-comments':return <ViewTaskComments />
+  }
+  }
+
+  const tabs = [
+    {id:'create_task',text:"Создание задачи"},
+    {id:'view-command-list',text:"Просмотр списка экипажа"},
+    {id:'task-manage',text:'Управление задачами'},
+    {id:'view-task-comments',text:'Просмотр комментариев к задачам'}
+  ];
+
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="p-6"
-    >
-      <h1 className="text-3xl font-bold text-white mb-6">Панель командира экипажа</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <motion.div 
-          whileHover={{ y: -5 }}
-          className="bg-gray-800 p-6 rounded-lg shadow-lg"
-        >
-          <h2 className="text-xl font-semibold text-white mb-2">Текущая миссия</h2>
-          <p className="text-gray-300">Статус и детали текущей миссии</p>
-        </motion.div>
-        
-        <motion.div 
-          whileHover={{ y: -5 }}
-          className="bg-gray-800 p-6 rounded-lg shadow-lg"
-        >
-          <h2 className="text-xl font-semibold text-white mb-2">Состав экипажа</h2>
-          <p className="text-gray-300">Информация о членах экипажа</p>
-        </motion.div>
-      </div>
-    </motion.div>
+    <InterfaceProvider>
+      <Header textField="Панель капитана" HeaderButtonProps={{
+        tabs:tabs,
+        activeTab:activeTab,
+        onTabChange:setActiveTab,
+      }}/>
+      <BodyContent key={activeTab}>
+        {renderTab()}
+      </BodyContent>
+    </InterfaceProvider>
   );
 };

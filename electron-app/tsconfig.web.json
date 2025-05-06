@@ -19,6 +19,7 @@
       "@shared/*":["components/roles/shared/*"],
       "@api-types/*":["api/apiTypes/*"],
       "@services/*":["services/*"],
+      "@role-components/*":["components/roles/*"],
     }
   }
 }

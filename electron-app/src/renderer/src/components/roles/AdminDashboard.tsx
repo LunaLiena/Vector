@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { UserManagement } from "@components/roles/admin/UserManagment"
-import { RoleManagement } from "@components/roles/admin/RoleManagment";
-import { PermissionManagement } from "@components/roles/admin/PermissionManagement";
+import { UserManagement } from "@role-components/admin/UserManagment"
+import { RoleManagement } from "@role-components/admin/RoleManagment";
+import { PermissionManagement } from "@role-components/admin/PermissionManagement";
 import { BodyContent } from "@shared/BodyContent";
 import { InterfaceProvider } from "@shared/InterfaceProvider";
 import { Header } from "@shared/Header";
