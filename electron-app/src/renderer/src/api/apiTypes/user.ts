@@ -10,4 +10,6 @@ export interface User {
         statusName: string;
     };
     avatar?: string;
+    email?: string;
+
 }

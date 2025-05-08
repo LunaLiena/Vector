@@ -1,4 +1,4 @@
-import { Button, TextInput, Text, Card, User } from '@gravity-ui/uikit';
+import { Button, TextInput, Text, Card } from '@gravity-ui/uikit';
 import { useState, useEffect, CSSProperties } from 'react';
 import { UserForm } from '@shared/UserForm';
 import {UserService} from '@services/userService';

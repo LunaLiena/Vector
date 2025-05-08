@@ -8,6 +8,10 @@ import { EngineerDashboard } from '@components/roles/EngineerDashboard';
 import { AstronautDashboard } from '@components/roles/AstronautDashboard';
 import { RootRoute } from './__root';
 import type { MyRouterContext } from '@renderer/types/router';
+import { ViewTaskComments } from '../components/roles/commander/ViewTaskComments';
+import { ManageTask } from '@renderer/components/roles/commander/ManageTask';
+import { TaskList } from '@renderer/components/roles/commander/TaskList';
+import { CreateTask } from '@renderer/components/roles/commander/CreateTask';
 
 const LoginRoute = createRoute({
   getParentRoute: () => RootRoute,
@@ -76,17 +80,51 @@ const GroundRoute = createRoute({
   },
 });
 
+const ManageTaskRoute = createRoute({
+  getParentRoute: () => CommanderRoute,
+  path: '/manage-tasks',
+  component: ManageTask,
+  beforeLoad: ({ context }) => {
+    if (!context.auth.isAuth || context.auth.routes?.name === 'user:read' || context.auth.routes?.name === 'user:create' || context.auth.routes?.name === 'user:update' || context.auth.routes?.name === 'task:create') {
+      throw redirect({ to: '/' });
+    }
+  },
+});
+
+const CreateTaskRoute = createRoute({
+  getParentRoute: () => CommanderRoute,
+  path: '/create-task',
+  component: CreateTask,
+  beforeLoad: ({ context }) => {
+    if (!context.auth.isAuth || context.auth.routes?.name == 'task:create') {
+      throw redirect({ to: '/' });
+    }
+  }
+})
+
+const ReadTaskRoute = createRoute({
+  getParentRoute: () => CommanderRoute,
+  path: '/read-tasks',
+  component: TaskList,
+  beforeLoad: ({ context }) => {
+    if (!context.auth.isAuth || context.auth.routes?.name === 'task:read') {
+      throw redirect({ to: '/' })
+    }
+  }
+})
+
+
 const getRouteByRole = (role?: string) => {
 
   if (!role) return '/';
 
   switch (role) {
-  case 'Центр Управления Полётами': return '/admin';
-  case 'Командир Экипажа': return '/commander';
-  case 'Бортовой Инженер': return '/engineer';
-  case 'Космонавт': return '/astronaut';
-  case 'Наземный Персонал': return '/ground';
-  default: return '/';
+    case 'Центр Управления Полётами': return '/admin';
+    case 'Командир Экипажа': return '/commander';
+    case 'Бортовой Инженер': return '/engineer';
+    case 'Космонавт': return '/astronaut';
+    case 'Наземный Персонал': return '/ground';
+    default: return '/';
   }
 };
 
@@ -100,4 +138,7 @@ export const routeTree = RootRoute.addChildren([
   EngineerRoute,
   AstronautRoute,
   GroundRoute,
+
+  ManageTaskRoute,
+  ReadTaskRoute,
 ]);
