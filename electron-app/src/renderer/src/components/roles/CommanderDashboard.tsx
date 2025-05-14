@@ -13,7 +13,7 @@ const tabComponent = {
   task_manage:<ManageTask />,
   view_task_comments:<ViewTaskComments />,
   view_task_list:<ViewTaskList />,
-}
+};
 
 export const CommanderDashboard = () => {
   

@@ -18,14 +18,16 @@ export const InterfaceProvider = ({
 }:InterfaceProviderProps)=>{
   const baseStyles: CSSProperties = {
     width: '98vw',
+    maxWidth:'100%',
     marginTop:'12px',
     margin: '0 auto', 
     height: fullHeight ? '100vh' : 'auto',
-    minHeight: fullHeight ? '100vh' : undefined,
+    minHeight: fullHeight ? '100dvh' : undefined,
     display: 'flex',
     flexDirection: 'column',
     boxSizing: 'border-box',
     gap: gap,
+    overflow:'hidden',
     ...style
   };
 

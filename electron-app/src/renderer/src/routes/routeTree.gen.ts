@@ -100,7 +100,7 @@ const CreateTaskRoute = createRoute({
       throw redirect({ to: '/' });
     }
   }
-})
+});
 
 const ReadTaskRoute = createRoute({
   getParentRoute: () => CommanderRoute,
@@ -108,10 +108,10 @@ const ReadTaskRoute = createRoute({
   component: TaskList,
   beforeLoad: ({ context }) => {
     if (!context.auth.isAuth || context.auth.routes?.name === 'task:read') {
-      throw redirect({ to: '/' })
+      throw redirect({ to: '/' });
     }
   }
-})
+});
 
 
 const getRouteByRole = (role?: string) => {
@@ -119,12 +119,12 @@ const getRouteByRole = (role?: string) => {
   if (!role) return '/';
 
   switch (role) {
-    case 'Центр Управления Полётами': return '/admin';
-    case 'Командир Экипажа': return '/commander';
-    case 'Бортовой Инженер': return '/engineer';
-    case 'Космонавт': return '/astronaut';
-    case 'Наземный Персонал': return '/ground';
-    default: return '/';
+  case 'Центр Управления Полётами': return '/admin';
+  case 'Командир Экипажа': return '/commander';
+  case 'Бортовой Инженер': return '/engineer';
+  case 'Космонавт': return '/astronaut';
+  case 'Наземный Персонал': return '/ground';
+  default: return '/';
   }
 };
 

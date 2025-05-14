@@ -1,0 +1,13 @@
+/* Сброс стандартных отступов */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Общие адаптивные стили */
+@media (max-height: 600px) {
+  .interface-provider {
+    height: auto !important;
+    min-height: 100dvh !important;
+  }
+}

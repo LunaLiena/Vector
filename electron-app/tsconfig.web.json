@@ -20,6 +20,8 @@
       "@api-types/*":["api/apiTypes/*"],
       "@services/*":["services/*"],
       "@role-components/*":["components/roles/*"],
+      "@styles/*":["style/*"],
+      "@hooks/*":["hooks/*"],
     }
   }
 }

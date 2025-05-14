@@ -1,0 +1,90 @@
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 16px 0;
+  width: 100%;
+}
+
+.tabs-container {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+  gap: 8px;
+  align-items: center;
+}
+
+.tab-button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.logout-button {
+  flex-shrink: 0;
+}
+
+/* Адаптивные стили */
+@media (max-width: 768px) {
+  .header-container {
+    gap: 8px;
+  }
+  
+  .logout-text {
+    display: none;
+  }
+}
+
+/* Стили для меню */
+.gravity-ui-dropdown-menu {
+  max-height: 60vh;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.gravity-ui-dropdown-menu__item {
+  padding: 10px 16px;
+  white-space: nowrap;
+}
+
+/* Скрываем scrollbar */
+.tabs-container::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+/* Стили для выпадающего меню */
+.custom-dropdown-menu {
+  z-index: 1000;
+}
+
+.custom-dropdown-menu .dropdown-menu-button {
+  margin-left: 8px;
+}
+
+.custom-dropdown-menu .dropdown-menu-item {
+  padding: 8px 16px;
+  min-width: 150px;
+}
+
+/* Анимация открытия меню */
+.custom-dropdown-menu .gravity-ui-popup {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Стили для мобильных устройств */
+@media (max-width: 768px) {
+  .custom-dropdown-menu .dropdown-menu-button {
+    padding: 6px;
+  }
+  
+  .custom-dropdown-menu .dropdown-menu-item {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}
