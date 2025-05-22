@@ -35,20 +35,22 @@ export const CreateTask = () => {
         setLoading(true);
         setError('');
 
-
         const [currentUser, assignableUsers] = await Promise.all([
           UserService.getCurrentUser(),
-          UserService.getAssignableUsers()
+          UserService.getAllUsers().catch(err => {
+            if (err.message.includes('permission')) {
+              setError('You need commander privileges to assign tasks');
+            }
+            return [];
+          })
         ]);
 
-        // Fetch current user
         setUser(currentUser);
-        setUsers(assignableUsers);
+        setUsers(assignableUsers.filter(user => user.role?.name !== 'Центр Управления Полётами' && user.role?.name !== 'Командир Экипажа'));
         setFilteredUsers(assignableUsers);
-
       } catch (err) {
         console.error('Failed to fetch users:', err);
-        setError('Failed to load available users');
+        setError('Failed to load available users. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -61,7 +63,10 @@ export const CreateTask = () => {
     if (searchTerm.trim() === '') {
       setFilteredUsers(users);
     } else {
-      const filtered = users.filter(u => u.username.toLowerCase().includes(searchTerm.toLowerCase()) || (u.role?.name && u.role.name.toLowerCase().includes(searchTerm.toLowerCase())) || (u.status?.statusName && u.status.statusName.toLowerCase().includes(searchTerm.toLowerCase())));
+      const filtered = users.filter(u => u.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (u.role?.name &&
+          u.role.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (u.status?.statusName && u.status.statusName.toLowerCase().includes(searchTerm.toLowerCase())));
       setFilteredUsers(filtered);
     }
   }, [searchTerm, users]);
@@ -101,8 +106,9 @@ export const CreateTask = () => {
 
   const userOptions = users.map(u => ({
     value: u.id.toString(),
-    content: `${u.username} (${u.role?.name}) - ${u.status?.statusName}`,
+    content: `${u.username} (${u.role?.name})${u.status?.statusName ? ' - ' + u.status.statusName : ''}`,
   }));
+
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
@@ -147,13 +153,6 @@ export const CreateTask = () => {
           </div>
 
           <div style={{ marginBottom: '20px' }}>
-
-            <Label>Поиск пользователя:</Label>
-            <TextInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder='Поиск по имени, роли или статусу'
-              size='l'
-              style={{ marginBottom: '10px' }}
-            />
 
             <Select
               label="Назначить на:"
