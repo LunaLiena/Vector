@@ -1,18 +1,19 @@
-import { router } from '@renderer/routes/router';
 import { create } from 'zustand';
-import { userStore } from '@store/userStore';
+import { router } from '@renderer/routes/router';
 import type { User } from '@renderer/types/user';
-
 
 interface AuthState {
   isAuth: boolean;
   accessToken: string | null;
+  refreshToken: string | null;
   user: User | null;
 
   login: (params: {
     accessToken: string;
+    refreshToken?: string;
     user: User;
   }) => void;
+
   logout: () => void;
 }
 
@@ -25,37 +26,46 @@ const safeJsonParse = <T>(value: string | null, fallback: T): T => {
   }
 };
 
+const getInitialUser = (): User | null => {
+  const userJson = localStorage.getItem('user');
+  return userJson ? safeJsonParse<User|null>(userJson, null) : null;
+};
+
 export const authStore = create<AuthState>((set) => ({
   isAuth: !!localStorage.getItem('accessToken'),
   accessToken: localStorage.getItem('accessToken'),
-  user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!) : null,
+  refreshToken: localStorage.getItem('refreshToken'),
+  user: getInitialUser(),
 
-  login: ({ accessToken, user }) => {
-
+  login: ({ accessToken, refreshToken, user }) => {
     localStorage.setItem('accessToken', accessToken);
+    if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('user', JSON.stringify(user));
 
     set({
       isAuth: true,
       accessToken,
-      user
+      refreshToken: refreshToken || null,
+      user,
     });
+
     router.invalidate();
   },
 
   logout: () => {
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
 
     set({
       isAuth: false,
       accessToken: null,
-      user: null
+      refreshToken: null,
+      user: null,
     });
 
     router.navigate({ to: '/' });
   },
-
 }));
 
 export const useAuthStore = authStore;

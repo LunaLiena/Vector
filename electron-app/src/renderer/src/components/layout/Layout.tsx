@@ -17,28 +17,28 @@ interface TabbedDashboardProps {
 }
 
 export const Layout = ({
-    title,
-    tabs,
-    defaultTab,
-    components,
+  title,
+  tabs,
+  defaultTab,
+  components,
 }: TabbedDashboardProps) => {
-    const [activeTab, setActiveTab] = useState(defaultTab);
+  const [activeTab, setActiveTab] = useState(defaultTab);
 
-    const ActiveComponent = components[activeTab] || components[defaultTab];
+  const ActiveComponent = components[activeTab] || components[defaultTab];
 
-    return (
-        <InterfaceProvider>
-            <Header
-                textField={title}
-                HeaderButtonProps={{
-                    tabs,
-                    activeTab,
-                    onTabChange: setActiveTab,
-                }}
-            />
-            <BodyContent key={activeTab}>
-                <ActiveComponent />
-            </BodyContent>
-        </InterfaceProvider>
-    );
+  return (
+    <InterfaceProvider>
+      <Header
+        textField={title}
+        HeaderButtonProps={{
+          tabs,
+          activeTab,
+          onTabChange: setActiveTab,
+        }}
+      />
+      <BodyContent key={activeTab}>
+        <ActiveComponent />
+      </BodyContent>
+    </InterfaceProvider>
+  );
 };

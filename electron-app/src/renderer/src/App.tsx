@@ -4,12 +4,10 @@ import '@gravity-ui/uikit/styles/styles.css';
 import { RouterProvider } from '@tanstack/react-router';
 import { router } from '@renderer/routes/router';
 import { useAuthStore } from '@store/authStore';
-import { useUserStore } from '@store/userStore';
 
 
 function App() {
-  const { isAuth, } = useAuthStore();
-  const { user } = useUserStore();
+  const { isAuth, user} = useAuthStore();
 
   return (
     <RouterProvider
@@ -17,7 +15,7 @@ function App() {
       context={{
         auth: {
           isAuth,
-          role: user?.role,
+          role: user?.role || null,
         }
       }}
     />

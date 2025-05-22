@@ -9,11 +9,14 @@ import {
   Spin,
   Label,
 } from '@gravity-ui/uikit';
+import { ThemeProvider,useTheme } from '@gravity-ui/uikit';
 import { DatePicker } from '@gravity-ui/date-components';
 import api from '@api/api';
 import { User } from '@api-types/user';
 import { DateTime } from '@gravity-ui/date-utils';
-import { UserService } from '../../../services/userService';
+import { UserService } from '@services/userService';
+import { TaskService } from '@renderer/services/taskService';
+import { motion } from 'framer-motion';
 
 export const CreateTask = () => {
   const [title, setTitle] = useState('');
@@ -81,12 +84,12 @@ export const CreateTask = () => {
 
     try {
       setLoading(true);
-      await api.post('/tasks', {
+      await TaskService.createTask({
         title,
         description,
         dueDate: dueDate.toISOString(),
         assignedTo: parseInt(assignedTo),
-        createdBy: user?.id,
+        createdBy: user!.id,
         statusId: 1, // "Ожидание запуска" status
       });
 
@@ -189,16 +192,34 @@ export const CreateTask = () => {
       )}
 
 
-      <Modal open={success} onClose={() => setSuccess(false)}>
-        <div style={{ padding: '20px' }}>
-          <Text variant="header-2">Task Created Successfully!</Text>
-          <Text>Your task has been assigned to the selected crew member.</Text>
-          <div style={{ marginTop: '20px' }}>
-            <Button view="action" onClick={() => setSuccess(false)}>
-              Close
+      <Modal open={success} onOpenChange={() => setSuccess(false)}>
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          style={{
+            background: 'var(--g-color-base-background)', // адаптивный фон
+            borderRadius: '16px',
+            padding: '32px',
+            maxWidth: '420px',
+            margin: 'auto',
+            boxShadow: '0 12px 32px rgba(0, 0, 0, 0.3)',
+            textAlign: 'center',
+          }}
+        >
+          <Text variant="header-1" style={{ marginBottom: '12px', color: 'var(--g-color-text-primary)' }}>
+            ✅ Задача создана <br />
+          </Text>
+          <Text style={{ fontSize: '16px', color: 'var(--g-color-text-secondary)' }}>
+            Ваша задача была создана и задана конкретному пользователю.
+          </Text>
+          <div style={{ marginTop: '32px' }}>
+            <Button view="action" size="l" onClick={() => setSuccess(false)}>
+              Закрыть
             </Button>
           </div>
-        </div>
+        </motion.div>
       </Modal>
     </div>
   );
