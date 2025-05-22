@@ -1,9 +1,10 @@
 import { create } from 'zustand';
 import type { User } from '@renderer/types/user';
 
-interface UserState extends User {
-    setUser: (user: Partial<UserState>) => void;
-    clearUser: () => void;
+interface UserState {
+  user: User | null;
+  setUser: (user: Partial<User>) => void;
+  clearUser: () => void;
 }
 
 const safeJsonParse = <T>(value: string | null, fallback: T): T => {
@@ -16,30 +17,41 @@ const safeJsonParse = <T>(value: string | null, fallback: T): T => {
 };
 
 export const userStore = create<UserState>((set) => ({
-  username: localStorage.getItem('username') || '',
-  role: safeJsonParse(localStorage.getItem('role'), null),
-  accessToken: localStorage.getItem('accessToken') || '',
-  refreshToken: localStorage.getItem('refreshToken') || '',
-  setUser: (user) => {
-    if (user.accessToken) localStorage.setItem('accessToken', user.accessToken);
-    if (user.refreshToken) localStorage.setItem('refreshToken', user.refreshToken);
-    if (user.role) localStorage.setItem('role', JSON.stringify(user.role));
-    if (user.username) localStorage.setItem('username', user.username);
+  user: localStorage.getItem('accessToken') ? {
+    username: localStorage.getItem('username') || '',
+    role: safeJsonParse(localStorage.getItem('role'), null),
+    accessToken: localStorage.getItem('accessToken') || '',
+    refreshToken: localStorage.getItem('refreshToken') || '',
+  } : null,
 
-    set((state) => ({ ...state, ...user }));
+  setUser: (partialUser) => {
+    set((state) => {
+      const user = state.user || {
+        username: '',
+        role: null,
+        accessToken: '',
+        refreshToken: ''
+      };
+
+      const updatedUser = { ...user, ...partialUser };
+
+      // Update localStorage
+      if (partialUser.accessToken) localStorage.setItem('accessToken', partialUser.accessToken);
+      if (partialUser.refreshToken) localStorage.setItem('refreshToken', partialUser.refreshToken);
+      if (partialUser.role) localStorage.setItem('role', JSON.stringify(partialUser.role));
+      if (partialUser.username) localStorage.setItem('username', partialUser.username);
+
+      return { user: updatedUser };
+    });
   },
+
   clearUser: () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('role');
     localStorage.removeItem('username');
 
-    set({
-      username: '',
-      role: null,
-      accessToken: '',
-      refreshToken: ''
-    });
+    set({ user: null });
   }
 }));
 
