@@ -34,6 +34,8 @@
     "@gravity-ui/uikit": "^7.9.1",
     "@tanstack/react-router": "^1.115.2",
     "@tanstack/react-router-devtools": "^1.115.2",
+    "ag-grid-community": "^33.3.0",
+    "ag-grid-react": "^33.3.0",
     "axios": "^1.8.4",
     "electron-updater": "^6.3.9",
     "framer-motion": "^12.6.2",

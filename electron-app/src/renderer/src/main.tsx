@@ -5,6 +5,7 @@ import App from './App';
 
 import '@gravity-ui/uikit/styles/fonts.css';
 import '@gravity-ui/uikit/styles/styles.css';
+
 import { ThemeProvider } from '@gravity-ui/uikit';
 import { setUpInterceptors } from '@api/interceptors';
 import { ToasterProvider,Toaster } from '@gravity-ui/uikit';

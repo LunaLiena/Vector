@@ -1,6 +1,7 @@
 import '@gravity-ui/uikit/styles/fonts.css';
 import '@gravity-ui/uikit/styles/styles.css';
 
+
 import { RouterProvider } from '@tanstack/react-router';
 import { router } from '@renderer/routes/router';
 import { useAuthStore } from '@store/authStore';
