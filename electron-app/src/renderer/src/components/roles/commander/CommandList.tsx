@@ -6,8 +6,10 @@ import { ModuleRegistry, AllCommunityModule,SetFilterModel } from 'ag-grid-commu
 import '@styles/table/index.css';
 import { User } from '@api-types/user';
 import { UserService } from '@services/userService';
-import { ArrowToggle, Spin } from '@gravity-ui/uikit';
-import { Task, TaskService } from '../../../services/taskService';
+import { ArrowToggle, Icon, Spin } from '@gravity-ui/uikit';
+import { Task, TaskService } from '@services/taskService';
+import {localeText} from '@utils/RU_locale_agrid';
+import ArchiveIcon from '@gravity-ui/icons/svgs/archive.svg';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 interface UserRow {
@@ -18,60 +20,6 @@ interface UserRow {
   online: boolean;
 }
 
-const localeText = {
-  // Общие
-  page: 'Страница',
-  more: 'ещё',
-  to: 'до',
-  of: 'из',
-  next: 'След.',
-  last: 'Последняя',
-  first: 'Первая',
-  previous: 'Пред.',
-  loadingOoo: 'Загрузка...',
-
-  // Фильтрация
-  filterOoo: 'Фильтр...',
-  equals: 'Равно',
-  notEqual: 'Не равно',
-  lessThan: 'Меньше',
-  greaterThan: 'Больше',
-  contains: 'Содержит',
-  notContains: 'Не содержит',
-  startsWith: 'Начинается с',
-  endsWith: 'Заканчивается на',
-
-  // Меню колонок
-  pinColumn: 'Закрепить колонку',
-  valueAggregation: 'Агрегация',
-  autosizeThiscolumn: 'Авторазмер',
-  autosizeAllColumns: 'Авторазмер всех колонок',
-  groupBy: 'Группировать по',
-  ungroupBy: 'Разгруппировать',
-  resetColumns: 'Сбросить колонки',
-  expandAll: 'Раскрыть все',
-  collapseAll: 'Свернуть все',
-  copy: 'Копировать',
-  copyWithHeaders: 'Копировать с заголовками',
-  ctrlC: 'Ctrl+C',
-  paste: 'Вставить',
-  ctrlV: 'Ctrl+V',
-
-  // Панель инструментов фильтра
-  applyFilter: 'Применить',
-  resetFilter: 'Сбросить',
-  clearFilter: 'Очистить',
-  cancelFilter: 'Отмена',
-
-  // Пагинация
-  pageSize: 'Размер страницы',
-
-  // Панель состояния
-  noRowsToShow: 'Нет данных для отображения',
-  blank:	'Пусто',
-  notBlank:	'Не пусто',
-  Page:'Страница',
-};
 
 
 const users: UserRow[] = [
@@ -150,7 +98,7 @@ export const CommandList = () => {
 
   return (
     <div style={{ width: '100%', height: '100%', padding: '16px' }}>
-      <h2 style={{ color: '#fff', marginBottom: 12 }}>👨‍🚀 Пользователи</h2>
+      <h2 style={{ color: '#fff', marginBottom: 12 }}><Icon data={ArchiveIcon} size={3}/> Пользователи</h2>
       <div
         style={{
           width: '100%',

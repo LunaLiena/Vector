@@ -13,7 +13,7 @@ import { ThemeProvider,useTheme } from '@gravity-ui/uikit';
 import { DatePicker } from '@gravity-ui/date-components';
 import api from '@api/api';
 import { User } from '@api-types/user';
-import { DateTime } from '@gravity-ui/date-utils';
+import { DateTime, dateTimeParse } from '@gravity-ui/date-utils';
 import { UserService } from '@services/userService';
 import { TaskService } from '@renderer/services/taskService';
 import { motion } from 'framer-motion';
@@ -151,6 +151,7 @@ export const CreateTask = () => {
               onUpdate={(date) => setDueDate(date)}
               pin='brick-brick'
               placeholder="Выберите крайнюю дату"
+              minValue={dateTimeParse(dueDate)}
               size="l"
             />
           </div>
