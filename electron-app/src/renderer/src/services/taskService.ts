@@ -18,6 +18,10 @@ export interface Task {
     assignedTo: number;
     createdBy: number;
     statusId: number;
+    status?:{
+      id:number;
+      statusName:string;
+    };
 }
 
 export interface UpdateTaskRequest {
@@ -41,6 +45,24 @@ export const TaskService = {
     const response = await api.get<Task>(`/tasks/${id}`);
     return response.data;
   },
+
+  getTasksByUser:async (userId:number):Promise<Array<Task>>=>{
+    const response = await api.get<Array<Task>>(`/tasks/user/${userId}`);
+    return response.data;
+  },
+
+  getTasksForUsers:async (userIds:Array<number>):Promise<Array<Task>>=>{
+    const response = await api.get<Array<Task>>(
+      '/tasks/users',{params:{userIds:userIds.join(',')}}
+    );
+    return response.data;
+  },
+
+  getMyTasks:async ():Promise<Array<Task>>=>{
+    const response = await api.get<Array<Task>>('/tasks/user/me');
+    return response.data;
+  },
+
   updateTask: async (id: number, data: UpdateTaskRequest): Promise<Task> => {
     const response = await api.put<Task>(`tasks/${id}`, data);
     return response.data;

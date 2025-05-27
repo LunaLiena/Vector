@@ -25,6 +25,20 @@ export const authService = {
   },
 
   logout() {
-    useAuthStore.getState().logout();
+    try{
+      delete api.defaults.headers.common['Authorization'];
+      useAuthStore.getState().logout();
+    } catch(error) {
+      console.error('Logout error:', error);
+    }
+  },
+
+  async checkAuth(){
+    const {accessToken,isAuth} = useAuthStore.getState();
+    if(!accessToken || !isAuth){
+      this.logout();
+      return false;
+    }
+    return true;
   }
 };

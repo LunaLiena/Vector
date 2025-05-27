@@ -4,9 +4,10 @@ import { AgGridReact } from 'ag-grid-react';
 import type { ColDef, FirstDataRenderedEvent, GridSizeChangedEvent } from 'ag-grid-community';
 import { ModuleRegistry, AllCommunityModule,SetFilterModel } from 'ag-grid-community';
 import '@styles/table/index.css';
-import { User } from '@renderer/api/apiTypes/user';
+import { User } from '@api-types/user';
 import { UserService } from '@services/userService';
-import { Spin } from '@gravity-ui/uikit';
+import { ArrowToggle, Spin } from '@gravity-ui/uikit';
+import { Task, TaskService } from '../../../services/taskService';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 interface UserRow {
@@ -107,27 +108,8 @@ export const CommandList = () => {
   const columnDefs: ColDef[] = useMemo(() => [
     { field: 'username', headerName: 'Имя', sortable: true, filter: 'agTextColumnFilter' },
     { field: 'role', headerName: 'Роль', sortable: true, filter: 'agTextColumnFilter',valueGetter:(params)=>params.data.role.name ?? '--', },
-    {
-      field: 'status',
-      headerName: 'Статус',
-      filter: 'agTextColumnFilter',
-      valueGetter: (params) => params.data.status?.statusName ?? '—',
-    },
-    {
-      field: 'task',
-      headerName: 'Задача',
-      filter: 'agTextColumnFilter',
-      valueGetter: (params) => params.data.task || '—',
-    },
-    {
-      field: 'online',
-      headerName: 'В сети',
-      sortable: true,
-      filter: 'agSetColumnFilter',
-      cellRenderer: (params) => {
-        return params.value ? '🟢 В сети' : '🟠 не в сети';
-      }
-    },
+    { field: 'status', headerName: 'Статус', filter: 'agTextColumnFilter', valueGetter: (params) => params.data.status?.statusName ?? '—', },
+    { field: 'online', headerName: 'В сети',  sortable: true, filter: 'agSetColumnFilter', cellRenderer: (params) => { return params.value ? '🟢 В сети' : '🟠 не в сети'; } },
   ], []);
 
   const onGridSizeChanged = useCallback((params: GridSizeChangedEvent) => {
@@ -139,7 +121,7 @@ export const CommandList = () => {
   }, []);
 
   useEffect(()=>{
-    const fetchUsers = async () =>{
+    const fetchData = async () =>{
       try{
         setLoading(true);
         setError('');
@@ -151,17 +133,15 @@ export const CommandList = () => {
           })
         ]);
         setUsers(users);
-
-
       }catch(err){
-        console.error('Failed to fetch users:',err);
+        console.error('Failed to fetch data:',err);
         setError('Failed to load users.Please try again.');
       }finally{
         setLoading(false);
       }
     };
 
-    fetchUsers();
+    fetchData();
   },[]);
 
   if (loading){
@@ -205,6 +185,7 @@ export const CommandList = () => {
               next: '<span>➡️</span>',
               previous: '<span>⬅️</span>',
             }
+          
           }}
         />
       </div>

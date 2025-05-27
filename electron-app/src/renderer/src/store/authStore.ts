@@ -53,6 +53,9 @@ export const authStore = create<AuthState>((set) => ({
   },
 
   logout: () => {
+    const shouldNavigate = !!localStorage.getItem('accessToken');
+
+
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
@@ -64,7 +67,10 @@ export const authStore = create<AuthState>((set) => ({
       user: null,
     });
 
-    router.navigate({ to: '/' });
+    if (shouldNavigate){
+      router.navigate({ to: '/' });
+    }
+
   },
 }));
 
