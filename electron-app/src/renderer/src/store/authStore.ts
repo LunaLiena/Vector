@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { router } from '@renderer/routes/router';
 import type { User } from '@renderer/types/user';
+import { getRouteByRole } from '@utils/getInterface';
 
 interface AuthState {
   isAuth: boolean;
@@ -49,13 +50,10 @@ export const authStore = create<AuthState>((set) => ({
       user,
     });
 
-    router.invalidate();
+    router.navigate({to:getRouteByRole(user.role?.name ?? ''),replace:true});
   },
 
   logout: () => {
-    const shouldNavigate = !!localStorage.getItem('accessToken');
-
-
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
@@ -67,9 +65,7 @@ export const authStore = create<AuthState>((set) => ({
       user: null,
     });
 
-    if (shouldNavigate){
-      router.navigate({ to: '/' });
-    }
+    router.navigate({ to: '/',replace:true });
 
   },
 }));

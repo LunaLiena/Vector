@@ -1,5 +1,6 @@
 //src/routeTree.gen.ts
 import { redirect, createRoute } from '@tanstack/react-router';
+import { getRouteByRole } from '@utils/getInterface';
 import { LoginForm } from '@components/LoginForm';
 import { AdminDashboard } from '@components/roles/AdminDashboard';
 import { CommanderDashboard } from '@components/roles/CommanderDashboard';
@@ -76,19 +77,6 @@ const GroundRoute = createRoute({
   },
 });
 
-const getRouteByRole = (role?: string) => {
-
-  if (!role) return '/';
-
-  switch (role) {
-  case 'Центр Управления Полётами': return '/admin';
-  case 'Командир Экипажа': return '/commander';
-  case 'Бортовой Инженер': return '/engineer';
-  case 'Космонавт': return '/astronaut';
-  case 'Наземный Персонал': return '/ground';
-  default: return '/';
-  }
-};
 
 
 

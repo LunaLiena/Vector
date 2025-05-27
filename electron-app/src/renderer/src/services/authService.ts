@@ -2,13 +2,17 @@ import api from '@api/api';
 
 // Получаем хранилища напрямую
 import { useAuthStore } from '@store/authStore';
+import { notify } from './notificationService';
+import { LoginRequest } from '@renderer/types/api-types';
 
 export const authService = {
 
-  async login(credentials: { username: string; password: string }) {
+  tokenExpirationTime:null as NodeJS.Timeout | null,
+
+  async login(credentials: LoginRequest) {
     try {
       const response = await api.post('/login', credentials);
-      const { access_token, user } = response.data;
+      const { access_token, user,expires_in } = response.data;
 
       api.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
 
@@ -16,6 +20,11 @@ export const authService = {
         accessToken: access_token,
         user
       });
+
+      notify.system.successLogin(user.username);
+
+      // Запускаем таймер для предупреждения об истечении токена
+      this.scheduleTokenExpirationWarning(expires_in);
 
       return user;
     } catch (error) {
@@ -26,6 +35,12 @@ export const authService = {
 
   logout() {
     try{
+
+      if(this.tokenExpirationTime){
+        clearTimeout(this.tokenExpirationTime);
+        this.tokenExpirationTime = null;
+      }
+
       delete api.defaults.headers.common['Authorization'];
       useAuthStore.getState().logout();
     } catch(error) {
@@ -40,5 +55,24 @@ export const authService = {
       return false;
     }
     return true;
+  },
+
+  scheduleTokenExpirationWarning(expiresIn:number){
+    if(this.tokenExpirationTime){
+      clearTimeout(this.tokenExpirationTime);
+    }
+
+    const warningTime = expiresIn - 300;
+    if(warningTime > 0){
+      this.tokenExpirationTime = setTimeout(()=>{
+        notify.system.tokenExpiringSoon();
+
+        const remainingTime = expiresIn - warningTime;
+        setTimeout(()=>{
+          notify.system.sessionExpired();
+          this.logout();
+        },remainingTime * 1000);
+      },warningTime * 1000);
+    }
   }
 };

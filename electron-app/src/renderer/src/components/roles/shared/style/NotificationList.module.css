@@ -1,0 +1,136 @@
+.container {
+  max-width: 500px;
+  background: var(--g-color-base-background);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 0 8px;
+}
+
+.badge {
+  background: var(--g-color-base-danger);
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 16px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.title {
+  flex-grow: 1;
+}
+
+.closeButton {
+  align-self: flex-start;
+  opacity: 0.6;
+}
+
+.closeButton:hover {
+  opacity: 1;
+}
+
+.message {
+  margin-left: 30px;
+  line-height: 1.4;
+}
+
+.footer {
+  margin-top: 12px;
+  margin-left: 30px;
+  opacity: 0.8;
+}
+
+/* Type-specific styles */
+.card.info {
+  border-color: var(--g-color-base-info);
+}
+
+.card.warning {
+  border-color: var(--g-color-base-warning);
+}
+
+.card.alert {
+  border-color: var(--g-color-base-danger);
+}
+
+.card.success {
+  border-color: var(--g-color-base-positive);
+}
+
+/* Icons */
+.infoIcon {
+  color: var(--g-color-base-info);
+}
+
+.warningIcon {
+  color: var(--g-color-base-warning);
+}
+
+.alertIcon {
+  color: var(--g-color-base-danger);
+}
+
+.successIcon {
+  color: var(--g-color-base-positive);
+}
+
+/* Empty state */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  opacity: 0.6;
+}
+
+.emptyIcon {
+  color: var(--g-color-base-positive);
+}
+
+/* Skeleton */
+.skeletonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 500px;
+}
+
+.skeleton {
+  height: 100px;
+  background: var(--g-color-base-simple-hover);
+  border-radius: 8px;
+}

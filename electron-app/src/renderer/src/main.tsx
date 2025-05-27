@@ -12,7 +12,7 @@ import { ToasterProvider,Toaster } from '@gravity-ui/uikit';
 import { createRoot } from 'react-dom/client';
 setUpInterceptors();
 
-const toaster = new Toaster();
+export const toaster = new Toaster();
 
 const rootElement = document.getElementById('root');
 

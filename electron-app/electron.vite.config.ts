@@ -29,6 +29,7 @@ export default defineConfig({
         '@services': resolve('src/renderer/src/services'),
         '@role-components': resolve('src/renderer/src/components/roles'),
         '@styles':resolve('src/renderer/src/style'),
+        '@utils':resolve('src/renderer/src/utils'),
       }
     },
     plugins: [

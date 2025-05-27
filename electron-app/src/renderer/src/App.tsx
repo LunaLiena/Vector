@@ -6,7 +6,7 @@ import { RouterProvider } from '@tanstack/react-router';
 import { router } from '@renderer/routes/router';
 import { useAuthStore } from '@store/authStore';
 import { useEffect } from 'react';
-import { authService } from './services/authService';
+import { authService } from '@services/authService';
 
 
 function App() {
