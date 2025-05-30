@@ -2,7 +2,7 @@
 import { useMemo, useState, useCallback, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import type { ColDef, FirstDataRenderedEvent, GridSizeChangedEvent } from 'ag-grid-community';
-import { ModuleRegistry, AllCommunityModule,SetFilterModel } from 'ag-grid-community';
+import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import '@styles/table/index.css';
 import { User } from '@api-types/user';
 import { UserService } from '@services/userService';
