@@ -7,23 +7,26 @@ import { useState } from 'react';
 import { NotificationsList } from '@shared/NotificationList';
 import { Bell } from '@gravity-ui/icons';
 
-export interface TabButton{
-    id:string;
-    text:string;
-    disabled?:boolean
+export interface TabButton<T extends string = string> {
+  id: T;
+  text: string;
+  disabled?: boolean;
 }
 
-export interface HeaderButtonProps{
-    tabs:Array<TabButton>;
-    activeTab:string;
-    onTabChange:(tabId:string)=>void;
-    
+export interface HeaderButtonProps<T extends string = string> {
+  tabs: Array<TabButton<T>>;
+  activeTab: T;
+  onTabChange: (tabId: T) => void;
 }
-
-export const HeaderButton = ({ tabs, activeTab, onTabChange }: HeaderButtonProps) => {
+export const HeaderButton = <T extends string>({ tabs, activeTab, onTabChange }: HeaderButtonProps<T>) => {
 
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const { logout } = useAuthStore();
+  const handleTabChange = (value:string) =>{
+    if(tabs.some(tab=>tab.id === value)){
+      onTabChange(value as T);
+    }
+  };
 
   return (
     <div className="admin-tabs" style={{ display: 'flex', gap: '8px', marginBottom: '16px', marginTop: '16px',alignItems:'center' }}>
@@ -38,7 +41,7 @@ export const HeaderButton = ({ tabs, activeTab, onTabChange }: HeaderButtonProps
       </Popup>
       
 
-      <TabProvider value={activeTab} onUpdate={onTabChange}>
+      <TabProvider value={activeTab} onUpdate={handleTabChange}>
         <div style={{ flexGrow: 1 }}>
           <TabList style={{
             display:'flex',

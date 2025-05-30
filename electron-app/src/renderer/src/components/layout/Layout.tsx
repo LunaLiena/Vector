@@ -1,35 +1,39 @@
-// src/components/shared/TabbedDashboard.tsx
 import { useState } from 'react';
 import { BodyContent } from '@shared/BodyContent';
 import { InterfaceProvider } from '@shared/InterfaceProvider';
 import { Header } from '@shared/Header';
+import React from 'react';
+import { AnimatePresence } from 'framer-motion';
 
-interface Tab {
-    id: string;
+interface TabConfig<T extends string> {
+    id: T;
     text: string;
 }
 
-interface TabbedDashboardProps {
+interface TabbedDashboardProps<T extends string> {
     title: string;
-    tabs: Array<Tab>;
-    defaultTab: string;
-    components: Record<string, React.ComponentType>;
+    tabs: Array<TabConfig<T>>;
+    firstComponent:React.ComponentType;
+    components: Record<T, React.ComponentType>;
 }
 
-export interface LayoutSettings{
-  tabs:Array<Record<string,string>>,
-  components:Map<string,React.ComponentType>,
-}
-
-export const Layout = ({
+export const Layout = <T extends string>({
   title,
   tabs,
-  defaultTab,
+  firstComponent:FirstComponent,
   components,
-}: TabbedDashboardProps) => {
-  const [activeTab, setActiveTab] = useState(defaultTab);
+}: TabbedDashboardProps<T>) => {
+  const firstTabId = tabs[0].id;
+  const [activeTab, setActiveTab] = useState<T>(firstTabId);
 
-  const ActiveComponent = components[activeTab] || components[defaultTab];
+
+  const handleTabChange = (tabId: string) => {
+    if (tabs.some(tab => tab.id === tabId)) {
+      setActiveTab(tabId as T);
+    }
+  };
+
+  const ActiveComponent = activeTab ? components[activeTab] : FirstComponent;
 
   return (
     <InterfaceProvider>
@@ -37,13 +41,15 @@ export const Layout = ({
         textField={title}
         HeaderButtonProps={{
           tabs,
-          activeTab,
-          onTabChange: setActiveTab,
+          activeTab:activeTab || firstTabId,
+          onTabChange: handleTabChange,
         }}
       />
-      <BodyContent key={activeTab}>
-        <ActiveComponent />
-      </BodyContent>
+      <AnimatePresence mode='wait'>
+        <BodyContent key={activeTab || 'first'}>
+          {ActiveComponent && React.createElement(ActiveComponent)}
+        </BodyContent>
+      </AnimatePresence>
     </InterfaceProvider>
   );
 };
