@@ -22,6 +22,7 @@
       "@role-components/*":["components/roles/*"],
       "@styles/*":["style/*"],
       "@utils/*":["utils/*"],
+      "@routes/*":["routes/*"],
     }
   }
 }

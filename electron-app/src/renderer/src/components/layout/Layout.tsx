@@ -11,9 +11,14 @@ interface Tab {
 
 interface TabbedDashboardProps {
     title: string;
-    tabs: Tab[];
+    tabs: Array<Tab>;
     defaultTab: string;
     components: Record<string, React.ComponentType>;
+}
+
+export interface LayoutSettings{
+  tabs:Array<Record<string,string>>,
+  components:Map<string,React.ComponentType>,
 }
 
 export const Layout = ({

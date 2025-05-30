@@ -24,7 +24,8 @@ export const CommanderDashboard = () => {
   };
 
   return (
-    <Layout title='Панель командира'
+    <Layout 
+      title='Панель командира'
       tabs={tabs}
       defaultTab='view-command-list'
       components={components}
