@@ -99,9 +99,7 @@ export const ManageTask = () =>{
     <div
       className="ag-theme-alpine"
       style={{
-        height: '600px',
         width: '100%',
-        padding: '20px',
         boxSizing: 'border-box'
       }}
     >      <h2 style={{ color: '#fff', marginBottom: 12 }}>👨‍🚀 Задачи</h2>

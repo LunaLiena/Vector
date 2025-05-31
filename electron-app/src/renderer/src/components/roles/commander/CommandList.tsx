@@ -10,6 +10,8 @@ import { ArrowToggle, Icon, Spin } from '@gravity-ui/uikit';
 import { Task, TaskService } from '@services/taskService';
 import {localeText} from '@utils/RU_locale_agrid';
 import ArchiveIcon from '@gravity-ui/icons/svgs/archive.svg';
+import { WorkerStatus } from '@api-types/worker-status';
+import { WorkerStatusService } from '../../../services/workerStatusService';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 interface UserRow {
@@ -19,16 +21,6 @@ interface UserRow {
   task?: string;
   online: boolean;
 }
-
-
-
-const users: UserRow[] = [
-  { id: 1, name: 'Alice', role: 'commander', task: 'Inspect module A', online: true },
-  { id: 2, name: 'Bob', role: 'engineer', task: '', online: false },
-  { id: 3, name: 'Charlie', role: 'admin', task: 'System diagnostics', online: true },
-  { id: 4, name: 'Dave', role: 'earth-ops', task: '', online: false },
-  { id: 5, name: 'Eva', role: 'engineer', task: 'Repair solar array', online: true },
-];
 
 interface TableProps  {
   id:number;
@@ -52,11 +44,14 @@ export const CommandList = () => {
   const [loading,setLoading] = useState(false);
   const [error,setError] = useState<string | null>(null);
 
-
-  const columnDefs: ColDef[] = useMemo(() => [
+  const columnDefs: Array<ColDef> = useMemo(() => [
     { field: 'username', headerName: 'Имя', sortable: true, filter: 'agTextColumnFilter' },
     { field: 'role', headerName: 'Роль', sortable: true, filter: 'agTextColumnFilter',valueGetter:(params)=>params.data.role.name ?? '--', },
-    { field: 'status', headerName: 'Статус', filter: 'agTextColumnFilter', valueGetter: (params) => params.data.status?.statusName ?? '—', },
+    { field: 'status', headerName: 'Статус', filter: 'agTextColumnFilter',
+      valueGetter: (params) => {
+        return params.data.status?.status_name ?? 'Статус не задан';
+      }, 
+    },
     { field: 'online', headerName: 'В сети',  sortable: true, filter: 'agSetColumnFilter', cellRenderer: (params) => { return params.value ? '🟢 В сети' : '🟠 не в сети'; } },
   ], []);
 
@@ -74,30 +69,40 @@ export const CommandList = () => {
         setLoading(true);
         setError('');
 
-        const [users] = await Promise.all([
+        const [users,statuses] = await Promise.all([
           UserService.getAllUsers().catch(err=>{
             setError(`Error with user service: ${err}`);
             return [];
+          }),
+          WorkerStatusService.getWorkerStatuses().catch(err =>{
+            setError(`Error with status service: ${err}`);
+            return [];
           })
         ]);
+
         setUsers(users);
       }catch(err){
         console.error('Failed to fetch data:',err);
-        setError('Failed to load users.Please try again.');
+        setError('Failed to load data.Please try again.');
       }finally{
         setLoading(false);
       }
     };
-
     fetchData();
   },[]);
 
   if (loading){
-    <Spin />;
+    <Spin size='xl'/>;
   }
 
+
+  if (error) {
+    return <div style={{ color: 'red' }}>{error}</div>;
+  }
+
+  console.log('users in command List:',users);
   return (
-    <div style={{ width: '100%', height: '100%', padding: '16px' }}>
+    <div style={{ width: '100%', height: '100%', }}>
       <h2 style={{ color: '#fff', marginBottom: 12 }}><Icon data={ArchiveIcon} size={3}/> Пользователи</h2>
       <div
         style={{
@@ -115,6 +120,7 @@ export const CommandList = () => {
           columnDefs={columnDefs}
           pagination={true}
           paginationPageSize={pageSize}
+          paginationPageSizeSelector={[10,20,50]}
           domLayout="autoHeight"
           onGridSizeChanged={onGridSizeChanged}
           onFirstDataRendered={onFirstDataRendered}
@@ -137,7 +143,6 @@ export const CommandList = () => {
           }}
         />
       </div>
-     
     </div>
   );
 };
