@@ -9,9 +9,7 @@ import {
   Spin,
   Label,
 } from '@gravity-ui/uikit';
-import { ThemeProvider,useTheme } from '@gravity-ui/uikit';
 import { DatePicker } from '@gravity-ui/date-components';
-import api from '@api/api';
 import { User } from '@api-types/user';
 import { DateTime, dateTimeParse } from '@gravity-ui/date-utils';
 import { UserService } from '@services/userService';
@@ -30,7 +28,6 @@ export const CreateTask = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  // Fetch available users (not admins and not busy)
 
   useEffect(() => {
     const fetchAvailableUsers = async () => {
@@ -69,7 +66,7 @@ export const CreateTask = () => {
       const filtered = users.filter(u => u.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (u.role?.name &&
           u.role.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (u.status?.statusName && u.status.statusName.toLowerCase().includes(searchTerm.toLowerCase())));
+        (u.status?.status_name && u.status.status_name.toLowerCase().includes(searchTerm.toLowerCase())));
       setFilteredUsers(filtered);
     }
   }, [searchTerm, users]);
@@ -109,7 +106,7 @@ export const CreateTask = () => {
 
   const userOptions = users.map(u => ({
     value: u.id.toString(),
-    content: `${u.username} (${u.role?.name})${u.status?.statusName ? ' - ' + u.status.statusName : ''}`,
+    content: `${u.username} (${u.role?.name})${u.status?.status_name ? ' - ' + u.status.status_name : ''}`,
   }));
 
 

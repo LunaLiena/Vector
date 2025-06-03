@@ -10,7 +10,7 @@ interface HeaderProps{
 
 export const Header = ({textField,HeaderButtonProps}:HeaderProps) =>{
   return(
-    <Card view="raised" className="admin-header" style={{padding:'16px',marginBottom:'16px',width:'100%'}}>
+    <Card view="raised" style={{padding:'16px',marginBottom:'12px',width:'100%'}}>
       <motion.div
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}

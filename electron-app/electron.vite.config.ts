@@ -31,6 +31,8 @@ export default defineConfig({
         '@styles':resolve('src/renderer/src/style'),
         '@utils':resolve('src/renderer/src/utils'),
         '@routes':resolve('src/renderer/src/routes'),
+        '@hooks':resolve('src/renderer/src/hooks'),
+      
       }
     },
     plugins: [

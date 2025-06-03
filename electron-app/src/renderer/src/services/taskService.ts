@@ -1,5 +1,6 @@
 import api from '@api/api';
-import { DateTime } from '@gravity-ui/date-utils';
+import { createSWRService } from './swrService';
+import { mutate } from 'swr';
 
 export interface CreateTaskRequest {
     title: string;
@@ -14,13 +15,13 @@ export interface Task {
     id: number;
     title: string;
     description: string;
-    dueDate: string;
-    assignedTo: number;
-    createdBy: number;
-    statusId: number;
+    due_date: string;
+    assigned_to: number;
+    created_by: number;
+    status_id: number;
     status?:{
       id:number;
-      statusName:string;
+      status_name:string;
     };
 }
 
@@ -35,6 +36,7 @@ export interface UpdateTaskRequest {
 export const TaskService = {
   createTask: async (task: CreateTaskRequest): Promise<Task> => {
     const response = await api.post<Task>('/tasks', task);
+    
     return response.data;
   },
   getTasks: async (): Promise<Array<Task>> => {
@@ -73,5 +75,16 @@ export const TaskService = {
   },
   deleteTask: async (id: number): Promise<void> => {
     await api.delete(`/tasks/${id}`);
+  },
+
+  swr:{
+    useTasks:()=>createSWRService('tasks',TaskService.getTasks).useQuery(),
+    useTaskById:(id:number)=>createSWRService('task-by-id',TaskService.getTaskById).useQuery(id),
+    useTasksByUser:(userId:number)=>createSWRService('tasks-by-user',TaskService.getTasksByUser).useQuery(userId),
+    mutateAll:()=>{
+      mutate('tasks');
+      mutate('/^task-by-id/');
+      mutate('/^tasks-by-user/');
+    }
   }
 };

@@ -1,34 +1,18 @@
 
-import { useMemo, useState, useCallback, useEffect } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import type { ColDef, FirstDataRenderedEvent, GridSizeChangedEvent } from 'ag-grid-community';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
-import '@styles/table/index.css';
-import { User } from '@api-types/user';
-import { UserService } from '@services/userService';
-import { ArrowToggle, Icon, Spin } from '@gravity-ui/uikit';
-import { Task, TaskService } from '@services/taskService';
+import {  Icon, Spin } from '@gravity-ui/uikit';
 import {localeText} from '@utils/RU_locale_agrid';
 import ArchiveIcon from '@gravity-ui/icons/svgs/archive.svg';
-import { WorkerStatus } from '@api-types/worker-status';
-import { WorkerStatusService } from '../../../services/workerStatusService';
+import { useUsers } from '@hooks/useUsers';
+import { useStatuses } from '@hooks/useStatuses';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-interface UserRow {
-  id: number;
-  name: string;
-  role: string;
-  task?: string;
-  online: boolean;
-}
+const REFRESH_INTERVAL = 30_000;
 
-interface TableProps  {
-  id:number;
-  name:string;
-  role:string;
-  task:string;
-  online:boolean;
-};
+
 
 const CustomFilterIcon = () => (
   <span style={{display:'inline-block', width:14,height:14}}>
@@ -40,19 +24,23 @@ const CustomFilterIcon = () => (
 
 export const CommandList = () => {
   const [pageSize] = useState(5);
-  const [users,setUsers] = useState<Array<User>>([]);
-  const [loading,setLoading] = useState(false);
-  const [error,setError] = useState<string | null>(null);
+
+  const {users,error:usersError,isLoading:isLoadingUsers,mutate:refreshUsers,} = useUsers({refreshInterval:REFRESH_INTERVAL});
+  const {statuses,error:statusesError,isLoading:isLoadingStatuses,mutate:refreshStatuses} = useStatuses({refreshInterval:REFRESH_INTERVAL});
+
+  const isLoading = isLoadingStatuses || isLoadingUsers;
+  const error = usersError || statusesError;
 
   const columnDefs: Array<ColDef> = useMemo(() => [
-    { field: 'username', headerName: 'Имя', sortable: true, filter: 'agTextColumnFilter' },
-    { field: 'role', headerName: 'Роль', sortable: true, filter: 'agTextColumnFilter',valueGetter:(params)=>params.data.role.name ?? '--', },
-    { field: 'status', headerName: 'Статус', filter: 'agTextColumnFilter',
+    { field: 'username', headerName: 'Имя', sortable: true, filter: 'agTextColumnFilter',minWidth:150 },
+    { field: 'role', headerName: 'Роль', sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => params.data.role.name ?? '--', minWidth: 150 },
+    {
+      field: 'status', headerName: 'Статус', filter: 'agTextColumnFilter', minWidth: 150,
       valueGetter: (params) => {
         return params.data.status?.status_name ?? 'Статус не задан';
       }, 
     },
-    { field: 'online', headerName: 'В сети',  sortable: true, filter: 'agSetColumnFilter', cellRenderer: (params) => { return params.value ? '🟢 В сети' : '🟠 не в сети'; } },
+    { field: 'online', headerName: 'В сети', sortable: true, filter: 'agSetColumnFilter', cellRenderer: (params) => { return params.value ? '🟢 В сети' : '🟠 не в сети'; }, minWidth: 150 },
   ], []);
 
   const onGridSizeChanged = useCallback((params: GridSizeChangedEvent) => {
@@ -63,41 +51,18 @@ export const CommandList = () => {
     params.api.sizeColumnsToFit();
   }, []);
 
-  useEffect(()=>{
-    const fetchData = async () =>{
-      try{
-        setLoading(true);
-        setError('');
+  const refreshData = useCallback(()=>{
+    refreshUsers();
+    refreshStatuses();
+  },[refreshUsers,refreshStatuses]);
 
-        const [users,statuses] = await Promise.all([
-          UserService.getAllUsers().catch(err=>{
-            setError(`Error with user service: ${err}`);
-            return [];
-          }),
-          WorkerStatusService.getWorkerStatuses().catch(err =>{
-            setError(`Error with status service: ${err}`);
-            return [];
-          })
-        ]);
-
-        setUsers(users);
-      }catch(err){
-        console.error('Failed to fetch data:',err);
-        setError('Failed to load data.Please try again.');
-      }finally{
-        setLoading(false);
-      }
-    };
-    fetchData();
-  },[]);
-
-  if (loading){
+  if (isLoading || !users || !statuses){
     <Spin size='xl'/>;
   }
 
 
   if (error) {
-    return <div style={{ color: 'red' }}>{error}</div>;
+    return <div style={{ color: 'red' }}>{error.message ?? 'ошибка загрузки данных'}</div>;
   }
 
   console.log('users in command List:',users);
@@ -139,8 +104,9 @@ export const CommandList = () => {
               next: '<span>➡️</span>',
               previous: '<span>⬅️</span>',
             }
-          
           }}
+          overlayNoRowsTemplate='Нет данных о пользователях'
+          overlayLoadingTemplate='Загрузка...'
         />
       </div>
     </div>

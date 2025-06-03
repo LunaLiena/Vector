@@ -23,6 +23,7 @@
       "@styles/*":["style/*"],
       "@utils/*":["utils/*"],
       "@routes/*":["routes/*"],
+      "@hooks/*":["hooks/*"],
     }
   }
 }

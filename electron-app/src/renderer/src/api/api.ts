@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { authStore } from '@store/authStore';
-import { Toast } from '@gravity-ui/uikit';
+import { ApiError } from './apiTypes/errors';
 
 const API_URL = import.meta.env.VITE_APP_API_URL || 'http://127.0.0.1:3000';
 
@@ -23,8 +23,10 @@ api.interceptors.request.use(config=>{
 
 api.interceptors.response.use(
   response=>response,
-  async error=>{
-    if(error.response?.status === 401 && !isLoggingOut){
+  error=>{
+    const apiError = ApiError.from(error);
+
+    if(apiError.statusCode === 401 && !isLoggingOut){
       isLoggingOut = true;
       try{
         authStore.getState().logout();
