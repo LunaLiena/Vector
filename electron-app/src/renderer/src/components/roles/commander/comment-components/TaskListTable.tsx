@@ -23,6 +23,7 @@ export const TaskListTable = (props:TaskTableProps) =>{
         domLayout="autoHeight"
         rowSelection={'single'}
         onRowClicked={props.onRowClicked}
+        suppressCellFocus
         headerHeight={40}
         rowHeight={40}
         pagination

@@ -1,16 +1,19 @@
 import { Button,Text} from '@gravity-ui/uikit';
-import {Comment} from '@services/commentService';
+import {Comment as CommentType} from '@services/commentService';
+import {User} from '@api-types/user';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
-interface ExtendedComment extends Comment{
-  replies?: Array<Comment>;
+interface ExtendedComment extends Omit<CommentType,'author'>{
+  author:User|null;
+  replies?: Array<CommentType>;
+
 }
 
 export interface CommentHistoryProps {
   selectedTaskId:number|null;
   loadingComments:boolean; 
-  commentsData:Array<Comment>  | undefined;
+  commentsData:Array<ExtendedComment>  | undefined;
   setReplyToId: (value: React.SetStateAction<number | null>) => void
 }
 
@@ -29,8 +32,8 @@ export const CommentHistory = (props:CommentHistoryProps) =>{
       borderRadius: 4,
       padding: 8
     }}>
-      {(props.commentsData as ExtendedComment[])?.length ? (
-        (props.commentsData as ExtendedComment[]).map((comment) => (
+      {props.commentsData?.length ? (
+        props.commentsData.map((comment) => (
           <div key={comment.id} style={{
             padding: 12,
             marginBottom: 8,
@@ -46,15 +49,15 @@ export const CommentHistory = (props:CommentHistoryProps) =>{
               </Text>
             </div>
             <Text style={{ margin: '8px 0' }}>{comment.text}</Text>
-   
+
             <Button
               size="s"
               view="flat-secondary"
               onClick={() => props.setReplyToId(comment.id)}
             >
-                             Ответить
+              Ответить
             </Button>
-   
+
             {comment.replies?.map((reply) => (
               <div key={reply.id} style={{
                 padding: 8,
@@ -65,7 +68,7 @@ export const CommentHistory = (props:CommentHistoryProps) =>{
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Text variant="subheader-3" color="primary">
-                                   ↳ {reply.author?.username || 'Неизвестный автор'}
+                    ↳ {reply.author?.username || 'Неизвестный автор'}
                   </Text>
                   <Text color="secondary" variant="caption-1">
                     {reply.created_at ? formatDate(reply.created_at) : ''}

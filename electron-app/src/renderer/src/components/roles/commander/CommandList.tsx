@@ -2,7 +2,7 @@
 import { useMemo, useState, useCallback } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import type { ColDef, FirstDataRenderedEvent, GridSizeChangedEvent } from 'ag-grid-community';
-import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
+import { ModuleRegistry, AllCommunityModule, themeQuartz, colorSchemeLightCold } from 'ag-grid-community';
 import {  Icon, Spin } from '@gravity-ui/uikit';
 import {localeText} from '@utils/RU_locale_agrid';
 import ArchiveIcon from '@gravity-ui/icons/svgs/archive.svg';
@@ -12,6 +12,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 
 const REFRESH_INTERVAL = 30_000;
 
+const myTheme = themeQuartz.withPart(colorSchemeLightCold);
 
 
 const CustomFilterIcon = () => (
@@ -80,6 +81,7 @@ export const CommandList = () => {
         }}
       >
         <AgGridReact
+          theme={themeQuartz}
           localeText={localeText}
           rowData={users}
           columnDefs={columnDefs}
