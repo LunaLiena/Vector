@@ -7,7 +7,7 @@ export interface User {
     };
     status?: {
         id: number;
-        statusName: string;
+        status_name: string;
     };
     avatar?: string;
 }

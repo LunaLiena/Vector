@@ -1,48 +1,73 @@
-import { router } from '@renderer/routes/router';
 import { create } from 'zustand';
-import { userStore } from '@store/userStore';
+import { router } from '@renderer/routes/router';
+import type { User } from '@renderer/types/user';
+import { getRouteByRole } from '@utils/getInterface';
 
 interface AuthState {
-    isAuth: boolean;
-    role: { id: number; name: string } | null;
-    login: (accessToken: string, refreshToken: string, role?: { id: number; name: string }) => void;
-    logout: () => void;
-    refresh: (accessToken: string) => void;
+  isAuth: boolean;
+  accessToken: string | null;
+  refreshToken: string | null;
+  user: User | null;
+
+  login: (params: {
+    accessToken: string;
+    refreshToken?: string;
+    user: User;
+  }) => void;
+
+  logout: () => void;
 }
 
-// Функция безопасного получения состояния
-const getInitialAuthState = () => ({
-  isAuth: !!localStorage.getItem('accessToken'),
-  role: localStorage.getItem('role') ? JSON.parse(localStorage.getItem('role')!) : null
-});
+const safeJsonParse = <T>(value: string | null, fallback: T): T => {
+  try {
+    return value ? JSON.parse(value) : fallback;
+  } catch (e) {
+    console.error('Failed to parse localStorage value:', value);
+    return fallback;
+  }
+};
+
+const getInitialUser = (): User | null => {
+  const userJson = localStorage.getItem('user');
+  return userJson ? safeJsonParse<User|null>(userJson, null) : null;
+};
 
 export const authStore = create<AuthState>((set) => ({
-  ...getInitialAuthState(),
+  isAuth: !!localStorage.getItem('accessToken'),
+  accessToken: localStorage.getItem('accessToken'),
+  refreshToken: localStorage.getItem('refreshToken'),
+  user: getInitialUser(),
 
-  login: (accessToken, refreshToken, role) => {
+  login: ({ accessToken, refreshToken, user }) => {
+    localStorage.setItem('accessToken', accessToken);
+    if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
+    localStorage.setItem('user', JSON.stringify(user));
 
-    if (!role) {
-      throw new Error('Role is required for login');
-    }
-
-    userStore.getState().setUser({
-      accessToken, refreshToken, role, username: '',
+    set({
+      isAuth: true,
+      accessToken,
+      refreshToken: refreshToken || null,
+      user,
     });
-    set({ isAuth: true, role: role });
-    router.invalidate();
+
+    router.navigate({to:getRouteByRole(user.role?.name ?? ''),replace:true});
   },
 
   logout: () => {
-    userStore.getState().clearUser();
-    set({ isAuth: false, role: null });
-    router.navigate({ to: '/' });
-  },
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
 
-  refresh: (accessToken) => {
-    const role = userStore.getState().role;
-    userStore.getState().setUser({ accessToken });
-    set({ role });
-  }
+    set({
+      isAuth: false,
+      accessToken: null,
+      refreshToken: null,
+      user: null,
+    });
+
+    router.navigate({ to: '/',replace:true });
+
+  },
 }));
 
 export const useAuthStore = authStore;

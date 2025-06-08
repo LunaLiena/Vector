@@ -2,8 +2,10 @@ import { CSSProperties, ReactNode, useState } from 'react';
 import { useAuthStore } from '@store/authStore';
 import { useRouter } from '@tanstack/react-router';
 import {motion} from 'framer-motion';
-import { Button,TextInput,Text,Card,useToaster } from '@gravity-ui/uikit';
+import { Button,TextInput,Text,Card } from '@gravity-ui/uikit';
 import { authService } from '@services/authService';
+import { notify } from '@renderer/services/notificationService';
+import { getRouteByRole } from '@utils/getInterface';
 // import {Lock} from '@gravity-ui/icons';
 
 export const LoginForm = () =>{
@@ -15,31 +17,17 @@ export const LoginForm = () =>{
 
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  const {add} = useToaster();
-  const login = useAuthStore((state)=>state.login);
+  const {login} = useAuthStore();
   const router = useRouter();
 
   const handleSubmit = async (e:React.FormEvent) =>{
     e.preventDefault();
-  
+    setIsLoading(true);
+    setError('');
 
     try{
-
       const response = await authService.login(credentials);
-
-      if(!response.role){
-        throw new Error('Role information not available');
-      }
-
-      add({
-        name:'login-success',
-        title:'Успешный вход',
-        content:'Вы успешно авторизировались в системе',
-        theme:'success',
-        autoHiding:5000,
-      });
-
+      notify.system.successLogin(response.username);
       router.navigate({
         to:getRouteByRole(response.role.name),
         replace:true,
@@ -47,30 +35,12 @@ export const LoginForm = () =>{
 
     }catch(err){
       setError('Неверные данные или проблемы с сервером');
-      add({
-        name: 'login-error',
-        title: 'Ошибка входа',
-        content: 'Проверьте правильность введенных данных',
-        theme: 'danger',
-        autoHiding: 5000,
-      });
+      notify.system.sessionExpired();
       console.error('Login error:',err);
     }finally{
       setIsLoading(false);
     }
-  };
-
-  const getRouteByRole = (role:string) =>{
-    console.log('Current role:',role);
-    switch(role){
-    case 'Центр Управления Полётами': return '/admin';
-    case 'Командир Экипажа': return '/commander';
-    case 'Бортовой Инженер': return '/engineer';
-    case 'Космонавт': return '/astronaut';
-    case 'Наземный Персонал': return '/ground';
-    default: return '/';
-    }
-  };
+  }; 
 
   const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>) =>{
     const {id,value} = e.target;

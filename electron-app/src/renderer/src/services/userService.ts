@@ -1,17 +1,25 @@
-import api, { apiDelete, apiGet } from '@api/api';
+import api from '@api/api';
 import type { User } from '@api-types/user';
 
 
 export interface UpdateUserData {
-    username?: string;
-    role_id?: number;
-    status_id?: number | null;
+  username?: string;
+  role_id?: number;
+  status_id?: number | null;
 }
 
 export const UserService = {
-  getAllUsers: (): Promise<Array<User>> => apiGet<Array<User>>('/users'),
-  getUserById: (id: number): Promise<User> => apiGet<User>(`/users/${id}`),
-  deleteUser: (userId: number): Promise<void> => apiDelete<void>(`/users/${userId}`),
+  getAllUsers: async (): Promise<Array<User>> => {
+    const response = await api.get<Array<User>>('/users');
+    return response.data;
+  },
+  getUserById: async (id: number): Promise<User> => {
+    const response = await api.get<User>(`/user/${id}`);
+    return response.data;
+  },
+  deleteUser: async (userId: number): Promise<void> => {
+    await api.delete(`/users/${userId}`);
+  },
 
   async getCurrentUser(): Promise<User> {
     try {
@@ -33,6 +41,15 @@ export const UserService = {
     }
   },
 
+  async getAssignableUsers(): Promise<Array<User>> {
+    try {
+      const response = await api.get('/users/assignable');
+      return response.data;
+    } catch (err) {
+      console.error('Error getAssignableUsers:', err);
+      throw err;
+    }
+  },
 
   async resetPassword(id: number): Promise<{ password: string }> {
     try {

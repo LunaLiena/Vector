@@ -1,5 +1,5 @@
 import { CSSProperties,ReactNode } from 'react';
-import {motion,AnimatePresence} from 'framer-motion';
+import {motion} from 'framer-motion';
 import { slideFadeVariants,transition } from './animation';
 
 interface BodyContentProps{
@@ -17,21 +17,17 @@ export const BodyContent = ({style,children,motionkey}:BodyContentProps)=>{
   };
 
   return (
-    <AnimatePresence>
-      <motion.div 
-        key={motionkey}
-        className="admin-content" 
-        style={{...defaultStyles,...style}} 
-        initial="initial" 
-        animate="animate" 
-        exit="exi
-                t" 
-        transition={transition}
-        variants={slideFadeVariants}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
-
+    <motion.div 
+      key={motionkey}
+      className="admin-content" 
+      style={{...defaultStyles,...style}} 
+      initial="initial" 
+      animate="animate" 
+      exit="exit" 
+      transition={transition}
+      variants={slideFadeVariants}
+    >
+      {children}
+    </motion.div>
   );
 };
