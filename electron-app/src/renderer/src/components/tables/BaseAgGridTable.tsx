@@ -1,7 +1,11 @@
-import { AgGridReact,AgGridReactProps } from 'ag-grid-react';
-import { themeQuartz,colorSchemeLightCold, Theme } from 'ag-grid-community';
+import { AgGridReact } from 'ag-grid-react';
+import { themeQuartz,colorSchemeLightCold, Theme, ColDef } from 'ag-grid-community';
 import {localeText} from '@utils/RU_locale_agrid';
 import { ReactElement } from 'react';
+
+// import { ModuleRegistry } from 'ag-grid-community';
+// import { SetFilterModule } from 'ag-grid-enterprise';
+// ModuleRegistry.registerModules([SetFilterModule]);
 
 declare module 'react' {
   interface CSSProperties {
@@ -21,6 +25,7 @@ export interface BaseTableProps<TData,>{
   withPagination?:boolean;
   withAutoHeight?:boolean;
   rowData:Array<TData>;
+  columnDefs:Array<ColDef<TData>>;
 };
 
 export const BaseAgGridTable =<TData,>({
@@ -30,8 +35,10 @@ export const BaseAgGridTable =<TData,>({
   rowHeight = 40,
   withPagination= true,
   withAutoHeight = true,
+  columnDefs,
+  rowData,
   ...props
-}:BaseTableProps<TData>,rowData:Array<TData>):ReactElement=>{
+}:BaseTableProps<TData>):ReactElement=>{
   return(
     <div className={theme as string} style={{
       height:'100%',
@@ -42,7 +49,8 @@ export const BaseAgGridTable =<TData,>({
         localeText={localeText} 
         theme={myTheme} 
         headerHeight={headerHeight} 
-        rowHeight={rowHeight} 
+        rowHeight={rowHeight}
+        columnDefs={columnDefs} 
         pagination={withPagination} 
         domLayout={withAutoHeight ? 'autoHeight':undefined}
         {...props}

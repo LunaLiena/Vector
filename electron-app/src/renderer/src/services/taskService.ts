@@ -61,7 +61,7 @@ export const TaskService = {
   },
 
   getMyTasks:async ():Promise<Array<Task>>=>{
-    const response = await api.get<Array<Task>>('/tasks/user/me');
+    const response = await api.get<Array<Task>>('/tasks/users/me');
     return response.data;
   },
 

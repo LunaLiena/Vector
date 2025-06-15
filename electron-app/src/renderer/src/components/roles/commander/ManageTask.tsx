@@ -2,7 +2,7 @@ import { Button, DropdownMenu, Icon, Spin } from '@gravity-ui/uikit';
 import { AgGridReact } from 'ag-grid-react';
 import { Bars, TrashBin } from '@gravity-ui/icons';
 import { themeQuartz, type ColDef, type ICellRendererParams, } from 'ag-grid-community';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { localeText } from '@utils/RU_locale_agrid';
 import useSWR, { mutate } from 'swr';
 import { UserService } from '@services/userService';

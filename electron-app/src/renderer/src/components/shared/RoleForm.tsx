@@ -1,7 +1,7 @@
 import { Button, TextInput, Text, Modal, Box, useToaster, Checkbox } from '@gravity-ui/uikit';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Stack } from '../admin/admin-components/stack';
+import { Stack } from '../roles/admin/admin-components/stack';
 import { Role } from '@api-types/role';
 import { Route } from '@api-types/route';
 import api from '@api/api';

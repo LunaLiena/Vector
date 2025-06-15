@@ -24,7 +24,7 @@ export default defineConfig({
         '@types': resolve('src/renderer/src/types'),
         '@store': resolve('src/renderer/src/store'),
         '@components': resolve('src/renderer/src/components'),
-        '@shared': resolve('src/renderer/src/components/roles/shared'),
+        '@shared': resolve('src/renderer/src/components/shared'),
         '@api-types': resolve('src/renderer/src/api/apiTypes'),
         '@services': resolve('src/renderer/src/services'),
         '@role-components': resolve('src/renderer/src/components/roles'),
