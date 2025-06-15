@@ -25,7 +25,7 @@ export const CommentHistory = (props:CommentHistoryProps) =>{
 
   return(
     <div style={{
-      maxHeight: '60vh',
+      maxHeight: '49vh',
       overflowY: 'auto',
       marginBottom: 12,
       border: '1px solid #444',

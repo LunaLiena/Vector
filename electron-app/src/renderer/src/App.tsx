@@ -1,5 +1,6 @@
 import '@gravity-ui/uikit/styles/fonts.css';
-import '@gravity-ui/uikit/styles/styles.css';
+// import '@gravity-ui/uikit/styles/styles.css';
+import '@styles/gravity-ui-light-theme.css';
 
 
 import { RouterProvider } from '@tanstack/react-router';

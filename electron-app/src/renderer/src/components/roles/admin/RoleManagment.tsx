@@ -5,7 +5,7 @@ import api from '@api/api';
 import { Route } from '@api-types/route';
 import { Role } from '@api-types/role';
 import { Stack } from './admin-components/stack';
-import { BaseModalForm } from '../shared/BaseModalForm';
+import { BaseModalForm } from '@shared/BaseModalForm';
 import { motion } from 'framer-motion';
 interface ModalWindowProps {
   routes: Route[];

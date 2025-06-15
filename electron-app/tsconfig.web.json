@@ -16,7 +16,7 @@
       "@types/*":["types/*"],
       "@store/*": ["store/*"],
       "@components/*": ["components/*"],
-      "@shared/*":["components/roles/shared/*"],
+      "@shared/*":["components/shared/*"],
       "@api-types/*":["api/apiTypes/*"],
       "@services/*":["services/*"],
       "@role-components/*":["components/roles/*"],
