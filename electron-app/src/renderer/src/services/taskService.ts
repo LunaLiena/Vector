@@ -55,13 +55,13 @@ export const TaskService = {
 
   getTasksForUsers:async (userIds:Array<number>):Promise<Array<Task>>=>{
     const response = await api.get<Array<Task>>(
-      '/tasks/users',{params:{userIds:userIds.join(',')}}
+      '/tasks/user',{params:{userIds:userIds.join(',')}}
     );
     return response.data;
   },
 
   getMyTasks:async ():Promise<Array<Task>>=>{
-    const response = await api.get<Array<Task>>('/tasks/users/me');
+    const response = await api.get<Array<Task>>('/tasks/user/me');
     return response.data;
   },
 
@@ -69,8 +69,8 @@ export const TaskService = {
     const response = await api.put<Task>(`tasks/${id}`, data);
     return response.data;
   },
-  updateTaskStatus: async (id: number, statusId: number): Promise<Task> => {
-    const response = await api.patch<Task>(`tasks/${id}/status`, { statusId });
+  updateTaskStatus: async (taskId: number, statusId: number): Promise<Task> => {
+    const response = await api.patch<Task>(`tasks/${taskId}/status`, { status_id:statusId });
     return response.data;
   },
   deleteTask: async (id: number): Promise<void> => {

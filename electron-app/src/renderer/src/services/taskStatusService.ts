@@ -1,6 +1,8 @@
 import api from '@api/api';
 import { createSWRService } from './swrService';
 import { mutate } from 'swr';
+import { Task } from './taskService';
+import { TaskStatusUpdateResponse } from '@renderer/api/apiTypes/task-status';
 export interface TaskStatus{
   id:number;
   status_name:string;
@@ -25,6 +27,11 @@ export const TaskStatusService = {
   },
   deleteTaskStatusById:async(id:number):Promise<TaskStatus>=>{
     const response = await api.delete<TaskStatus>(`/tasks/${id}`);
+    return response.data;
+  },
+
+  updateTaskStatus:async(taskId:number,statusId:number):Promise<Task>=>{
+    const response = await api.patch<Task>(`/tasks/${taskId}/status`,{status_id:statusId});
     return response.data;
   },
 

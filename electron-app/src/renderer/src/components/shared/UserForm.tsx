@@ -5,6 +5,9 @@ import api from '@api/api';
 import { Role } from '@api-types/role';
 import { User } from '@api-types/user';
 import { BaseModalForm } from './BaseModalForm';
+import { RoleService } from '@renderer/services/roleService';
+import { WorkerStatusService } from '@renderer/services/workerStatusService';
+import { WorkerStatus } from '@renderer/api/apiTypes/worker-status';
 
 interface UserFormProps {
   user?: User;
@@ -17,16 +20,6 @@ interface Status {
   statusName: string;
 }
 
-const MotionDiv = ({ children }: { children: ReactNode }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.3 }}
-  >
-    {children}
-  </motion.div>
-);
-
 export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
   const [formData, setFormData] = useState({
     username: '',
@@ -36,7 +29,7 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
   });
   
   const [roles, setRoles] = useState<Role[]>([]);
-  const [statuses, setStatuses] = useState<Status[]>([]);
+  const [statuses, setStatuses] = useState<WorkerStatus[]>([]);
   const [loading, setLoading] = useState({
     data: false,
     submit: false
@@ -48,12 +41,12 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
       setLoading(prev => ({ ...prev, data: true }));
       try {
         const [rolesRes, statusesRes] = await Promise.all([
-          api.get<Role[]>('/roles'),
-          api.get<Status[]>('/status')
+          RoleService.getRoles(),
+          WorkerStatusService.getWorkerStatuses(),
         ]);
         
-        setRoles(rolesRes.data);
-        setStatuses(statusesRes.data);
+        setRoles(rolesRes);
+        setStatuses(statusesRes);
         
         if (user) {
           setFormData({

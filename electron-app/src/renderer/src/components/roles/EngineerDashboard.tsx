@@ -9,7 +9,7 @@ const {defineTabs} = createFabricContainer<EngineerTabId>();
 
 export const EngineerDashboard = defineTabs([
   {id:'read-tasks',text:'Список задач',component:ReadTasks},
-  {id:'status-manage',text:'Управление задачами',component:StatusManage},
+  {id:'status-manage',text:'Текущие задачами',component:StatusManage},
   {id:'user-read',text:'Список пользователей',component:UserRead},
   {id:'private-office',text:'Личный кабинет',component:PrivateOffice}
 ]).create('Панель инженера');

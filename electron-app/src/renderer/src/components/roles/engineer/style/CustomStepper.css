@@ -1,0 +1,49 @@
+.custom-stepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative; /* Для позиционирования текста */
+}
+
+.step-circle {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background-color: transparent; /* Прозрачная заливка */
+}
+
+
+
+.separator {
+  margin: 0 8px;
+  color: #ccc;
+  font-weight: bold;
+}
+
+/* Цвета границ для разных статусов */
+.step.waiting .step-circle {
+  border-color: #ccc;
+}
+
+.step.in-progress .step-circle {
+  border-color: #ffc600;
+}
+
+.step.completed .step-circle {
+  border-color: #3d8b40;
+}
+
+.step.error .step-circle {
+  border-color: #d32f2f;
+}
+
+.step.paused .step-circle {
+  border-color: #f57c00;
+}
