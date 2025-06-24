@@ -6,29 +6,28 @@ import React from 'react';
 import { AnimatePresence } from 'framer-motion';
 
 interface TabConfig<T extends string> {
-    id: T;
-    text: string;
+  id: T
+  text: string
 }
 
 interface TabbedDashboardProps<T extends string> {
-    title: string;
-    tabs: Array<TabConfig<T>>;
-    firstComponent:React.ComponentType;
-    components: Record<T, React.ComponentType>;
+  title: string
+  tabs: Array<TabConfig<T>>
+  firstComponent: React.ComponentType
+  components: Record<T, React.ComponentType>
 }
 
 export const Layout = <T extends string>({
   title,
   tabs,
-  firstComponent:FirstComponent,
-  components,
+  firstComponent: FirstComponent,
+  components
 }: TabbedDashboardProps<T>) => {
   const firstTabId = tabs[0].id;
   const [activeTab, setActiveTab] = useState<T>(firstTabId);
 
-
   const handleTabChange = (tabId: string) => {
-    if (tabs.some(tab => tab.id === tabId)) {
+    if (tabs.some((tab) => tab.id === tabId)) {
       setActiveTab(tabId as T);
     }
   };
@@ -41,11 +40,11 @@ export const Layout = <T extends string>({
         textField={title}
         HeaderButtonProps={{
           tabs,
-          activeTab:activeTab || firstTabId,
-          onTabChange: handleTabChange,
+          activeTab: activeTab || firstTabId,
+          onTabChange: handleTabChange
         }}
       />
-      <AnimatePresence mode='wait'>
+      <AnimatePresence mode="wait">
         <BodyContent key={activeTab || 'first'}>
           {ActiveComponent && React.createElement(ActiveComponent)}
         </BodyContent>

@@ -1,10 +1,3 @@
-
-
-export const UserRead = () =>{
-
-  return(
-    <div>
-      user read component
-    </div>
-  );
-};
+export const UserRead = () => {
+  return <div>user read component</div>
+}

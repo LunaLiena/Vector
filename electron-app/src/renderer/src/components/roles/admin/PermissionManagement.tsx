@@ -5,9 +5,9 @@ import api from '@api/api';
 import { Stack } from './admin-components/stack';
 
 export interface Route {
-    id: number;
-    name: string;
-    description?: string;
+  id: number
+  name: string
+  description?: string
 }
 
 export const PermissionManagement = () => {
@@ -38,7 +38,7 @@ export const PermissionManagement = () => {
 
   const handleDelete = async (routeId: number) => {
     if (!window.confirm('Вы уверены, что хотите удалить это право доступа?')) return;
-    
+
     try {
       setIsLoading(true);
       await api.delete(`/routes/${routeId}`);
@@ -51,28 +51,34 @@ export const PermissionManagement = () => {
     }
   };
 
-  const filteredRoutes = routes.filter(route =>
-    route.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (route.description && route.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredRoutes = routes.filter(
+    (route) =>
+      route.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (route.description && route.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (
     <div style={{ height: '100%' }}>
-      <Card view="raised" style={{ 
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        overflow: 'hidden'
-      }}>
+      <Card
+        view="raised"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          overflow: 'hidden'
+        }}
+      >
         {/* Фиксированная верхняя часть */}
         <div style={{ padding: 16, flexShrink: 0 }}>
-          <Text variant="header-2" style={{ marginBottom: 12 }}>Управление правами доступа</Text>
+          <Text variant="header-2" style={{ marginBottom: 12 }}>
+            Управление правами доступа
+          </Text>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             <TextInput
               placeholder="Поиск по названию или описанию..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ flexGrow: 1 ,marginTop:12}}
+              style={{ flexGrow: 1, marginTop: 12 }}
             />
             <Button
               view="action"
@@ -81,7 +87,7 @@ export const PermissionManagement = () => {
                 setShowForm(true);
               }}
               style={{
-                marginTop:10
+                marginTop: 10
               }}
               loading={isLoading}
             >
@@ -91,11 +97,13 @@ export const PermissionManagement = () => {
         </div>
 
         {/* Прокручиваемая область с карточками */}
-        <div style={{
-          flexGrow: 1,
-          overflowY: 'auto',
-          padding: '0 16px 16px'
-        }}>
+        <div
+          style={{
+            flexGrow: 1,
+            overflowY: 'auto',
+            padding: '0 16px 16px'
+          }}
+        >
           {isLoading ? (
             <Text>Загрузка данных...</Text>
           ) : error ? (
@@ -106,22 +114,22 @@ export const PermissionManagement = () => {
             </Card>
           ) : (
             <div style={{ display: 'grid', gap: 12 }}>
-              {filteredRoutes.map(route => (
+              {filteredRoutes.map((route) => (
                 <Card key={route.id} view="outlined" style={{ padding: 12 }}>
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}
+                  >
                     <Stack gap={2}>
                       <Text variant="subheader-2">{route.name}</Text>
-                      {route.description && (
-                        <Text color="secondary">{route.description}</Text>
-                      )}
+                      {route.description && <Text color="secondary">{route.description}</Text>}
                     </Stack>
                     <div style={{ display: 'flex', gap: 8 }}>
-                      <Button 
-                        view="outlined" 
+                      <Button
+                        view="outlined"
                         size="m"
                         onClick={() => {
                           setEditingRoute(route);
@@ -130,8 +138,8 @@ export const PermissionManagement = () => {
                       >
                         Редактировать
                       </Button>
-                      <Button 
-                        view="outlined-danger" 
+                      <Button
+                        view="outlined-danger"
                         size="m"
                         onClick={() => handleDelete(route.id)}
                         loading={isLoading}
@@ -148,8 +156,8 @@ export const PermissionManagement = () => {
       </Card>
 
       {showForm && (
-        <PermissionForm 
-          route={editingRoute} 
+        <PermissionForm
+          route={editingRoute}
           onClose={() => {
             setShowForm(false);
             setEditingRoute(null);

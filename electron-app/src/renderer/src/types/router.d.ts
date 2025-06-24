@@ -1,14 +1,14 @@
-import { Router } from '@tanstack/react-router';
+import { Router } from '@tanstack/react-router'
 
-declare module '@tanstack/react-router'{
-    interface Register{
-        router:typeof Router;
-    }
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof Router
+  }
 
-    interface RouteContext{
-        auth:{
-            isAuth:boolean;
-            role?:string;
-        };
+  interface RouteContext {
+    auth: {
+      isAuth: boolean
+      role?: string
     }
+  }
 }

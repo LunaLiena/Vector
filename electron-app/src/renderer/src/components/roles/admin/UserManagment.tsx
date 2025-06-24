@@ -1,9 +1,9 @@
 import { Button, TextInput, Text, Card, User } from '@gravity-ui/uikit';
 import { useState, useEffect, CSSProperties } from 'react';
 import { UserForm } from '@shared/UserForm';
-import {UserService} from '@services/userService';
+import { UserService } from '@services/userService';
 import { Stack } from './admin-components/stack';
-import { type User as UserType} from '@api-types/user';
+import { type User as UserType } from '@api-types/user';
 import api from '@api/api';
 
 export const UserManagement = () => {
@@ -47,25 +47,29 @@ export const UserManagement = () => {
     }
   };
 
-  const filteredUsers = users.filter(user => 
+  const filteredUsers = users.filter((user) =>
     user.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <div style={{height:'100%'}}>
-      <Card view="raised" className="section-card" style={{ display: 'flex', flexDirection: 'column', height: '100%',overflow:'hidden' }}>
+    <div style={{ height: '100%' }}>
+      <Card
+        view="raised"
+        className="section-card"
+        style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}
+      >
         {/* Фиксированная верхняя часть */}
         <div style={{ padding: 12, flexShrink: 0 }}>
           <Text variant="header-2">Состав экипажа</Text>
           <div style={{ marginTop: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
-            <TextInput 
-              placeholder="Поиск по имени..." 
+            <TextInput
+              placeholder="Поиск по имени..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{ flexGrow: 1 }}
             />
-            <Button 
-              view="action" 
+            <Button
+              view="action"
               onClick={() => {
                 setEditingUser(undefined);
                 setShowForm(true);
@@ -77,12 +81,14 @@ export const UserManagement = () => {
         </div>
 
         {/* Прокручиваемая область с карточками */}
-        <div style={{ 
-          flexGrow: 1, 
-          overflowY: 'auto',
-          padding: 12,
-          marginTop: 8
-        }}>
+        <div
+          style={{
+            flexGrow: 1,
+            overflowY: 'auto',
+            padding: 12,
+            marginTop: 8
+          }}
+        >
           {isLoading ? (
             <Text>Загрузка данных...</Text>
           ) : error ? (
@@ -91,11 +97,16 @@ export const UserManagement = () => {
             <Text>Пользователи не найдены</Text>
           ) : (
             <div style={{ display: 'grid', gap: 12 }}>
-              {filteredUsers.map(user => (
+              {filteredUsers.map((user) => (
                 <Card key={user.id} view="outlined" style={{ padding: 12 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}
+                  >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      
                       <Stack gap={4}>
                         <Text variant="subheader-2">{user.username}</Text>
                         <Text color="secondary">{user.role?.name || 'Роль не назначена'}</Text>
@@ -118,8 +129,8 @@ export const UserManagement = () => {
       </Card>
 
       {showForm && (
-        <UserForm 
-          user={editingUser} 
+        <UserForm
+          user={editingUser}
           onClose={() => {
             setShowForm(false);
             setEditingUser(undefined);
@@ -135,12 +146,10 @@ export const UserManagement = () => {
 };
 
 interface OutterContainerProps {
-  children: React.ReactNode;
-  style?: CSSProperties;
+  children: React.ReactNode
+  style?: CSSProperties
 }
 
 export const OutterContainer = ({ children, style }: OutterContainerProps) => (
-  <div style={{ height: '100%', ...style }}>
-    {children}
-  </div>
+  <div style={{ height: '100%', ...style }}>{children}</div>
 );

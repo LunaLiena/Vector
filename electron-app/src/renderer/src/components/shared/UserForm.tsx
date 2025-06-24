@@ -10,14 +10,14 @@ import { WorkerStatusService } from '@renderer/services/workerStatusService';
 import { WorkerStatus } from '@renderer/api/apiTypes/worker-status';
 
 interface UserFormProps {
-  user?: User;
-  onClose: () => void;
-  onSuccess: () => void;
+  user?: User
+  onClose: () => void
+  onSuccess: () => void
 }
 
 interface Status {
-  id: number;
-  statusName: string;
+  id: number
+  statusName: string
 }
 
 export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
@@ -27,7 +27,7 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
     roleId: '',
     statusId: ''
   });
-  
+
   const [roles, setRoles] = useState<Role[]>([]);
   const [statuses, setStatuses] = useState<WorkerStatus[]>([]);
   const [loading, setLoading] = useState({
@@ -38,16 +38,16 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(prev => ({ ...prev, data: true }));
+      setLoading((prev) => ({ ...prev, data: true }));
       try {
         const [rolesRes, statusesRes] = await Promise.all([
           RoleService.getRoles(),
-          WorkerStatusService.getWorkerStatuses(),
+          WorkerStatusService.getWorkerStatuses()
         ]);
-        
+
         setRoles(rolesRes);
         setStatuses(statusesRes);
-        
+
         if (user) {
           setFormData({
             username: user.username,
@@ -62,10 +62,10 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
           title: 'Ошибка загрузки',
           content: 'Не удалось загрузить данные',
           theme: 'danger',
-          autoHiding: 5000,
+          autoHiding: 5000
         });
       } finally {
-        setLoading(prev => ({ ...prev, data: false }));
+        setLoading((prev) => ({ ...prev, data: false }));
       }
     };
 
@@ -74,8 +74,8 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(prev => ({ ...prev, submit: true }));
-    
+    setLoading((prev) => ({ ...prev, submit: true }));
+
     try {
       const payload = {
         ...formData,
@@ -90,7 +90,7 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
           title: 'Успешно',
           content: 'Данные пользователя обновлены',
           theme: 'success',
-          autoHiding: 3000,
+          autoHiding: 3000
         });
       } else {
         await api.post('/register', payload);
@@ -99,7 +99,7 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
           title: 'Успешно',
           content: 'Пользователь создан',
           theme: 'success',
-          autoHiding: 3000,
+          autoHiding: 3000
         });
       }
       onSuccess();
@@ -109,16 +109,16 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
         title: 'Ошибка',
         content: 'Не удалось сохранить данные',
         theme: 'danger',
-        autoHiding: 5000,
+        autoHiding: 5000
       });
     } finally {
-      setLoading(prev => ({ ...prev, submit: false }));
+      setLoading((prev) => ({ ...prev, submit: false }));
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -127,8 +127,10 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
       onClose={onClose}
       width={500}
     >
-          
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
+      >
         <div style={{ marginBottom: '20px' }}>
           <div style={{ marginBottom: '8px' }}>
             <Text variant="subheader-2">Имя пользователя</Text>
@@ -143,7 +145,7 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
             hasClear
           />
         </div>
-            
+
         <div style={{ marginBottom: '20px' }}>
           <div style={{ marginBottom: '8px' }}>
             <Text variant="subheader-2">Пароль</Text>
@@ -159,15 +161,15 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
             hasClear
           />
         </div>
-            
+
         <div style={{ marginBottom: '20px' }}>
           <div style={{ marginBottom: '8px' }}>
             <Text variant="subheader-2">Звание</Text>
           </div>
           <Select
             value={formData.roleId ? [formData.roleId] : []}
-            onUpdate={(value) => setFormData(prev => ({ ...prev, roleId: value[0] }))}
-            options={roles.map(role => ({
+            onUpdate={(value) => setFormData((prev) => ({ ...prev, roleId: value[0] }))}
+            options={roles.map((role) => ({
               value: role.id.toString(),
               content: role.name
             }))}
@@ -178,17 +180,15 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
             hasClear
           />
         </div>
-            
-        <div style={{ 
-          display: 'flex', 
-          gap: '12px', 
-          marginTop: '16px'
-        }}>
-          <motion.div 
-            whileHover={{ scale: 1.02 }} 
-            whileTap={{ scale: 0.98 }} 
-            style={{ flex: 1 }}
-          >
+
+        <div
+          style={{
+            display: 'flex',
+            gap: '12px',
+            marginTop: '16px'
+          }}
+        >
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ flex: 1 }}>
             <Button
               view="outlined"
               type="button"
@@ -197,22 +197,12 @@ export const UserForm = ({ user, onClose, onSuccess }: UserFormProps) => {
               width="max"
               disabled={loading.submit}
             >
-                  Отмена
+              Отмена
             </Button>
           </motion.div>
-              
-          <motion.div 
-            whileHover={{ scale: 1.02 }} 
-            whileTap={{ scale: 0.98 }} 
-            style={{ flex: 1 }}
-          >
-            <Button
-              view="action"
-              type="submit"
-              loading={loading.submit}
-              size="l"
-              width="max"
-            >
+
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={{ flex: 1 }}>
+            <Button view="action" type="submit" loading={loading.submit} size="l" width="max">
               {user ? 'Сохранить' : 'Создать'}
             </Button>
           </motion.div>

@@ -1,14 +1,14 @@
 //src/routeTree.gen.ts
-import { redirect, createRoute } from '@tanstack/react-router';
-import { getRouteByRole } from '@utils/getInterface';
-import { LoginForm } from '@components/LoginForm';
-import { AdminDashboard } from '@components/roles/AdminDashboard';
-import { CommanderDashboard } from '@components/roles/CommanderDashboard';
-import { GroundDashboard } from '@components/roles/GroundDashboard';
-import { EngineerDashboard } from '@components/roles/EngineerDashboard';
-import { AstronautDashboard } from '@components/roles/AstronautDashboard';
-import { RootRoute } from './__root';
-import type { MyRouterContext } from '@renderer/types/router';
+import { redirect, createRoute } from '@tanstack/react-router'
+import { getRouteByRole } from '@utils/getInterface'
+import { LoginForm } from '@components/LoginForm'
+import { AdminDashboard } from '@components/roles/AdminDashboard'
+import { CommanderDashboard } from '@components/roles/CommanderDashboard'
+import { GroundDashboard } from '@components/roles/GroundDashboard'
+import { EngineerDashboard } from '@components/roles/EngineerDashboard'
+import { AstronautDashboard } from '@components/roles/AstronautDashboard'
+import { RootRoute } from './__root'
+import type { MyRouterContext } from '@renderer/types/router'
 
 const LoginRoute = createRoute({
   getParentRoute: () => RootRoute,
@@ -16,11 +16,11 @@ const LoginRoute = createRoute({
   component: LoginForm,
   beforeLoad: ({ context }) => {
     if (context.auth.isAuth && context.auth.role?.name) {
-      console.log('context.auth.isAuth (from LoginRoute):', context.auth.isAuth);
-      throw redirect({ to: getRouteByRole(context.auth.role?.name), replace: true });
+      console.log('context.auth.isAuth (from LoginRoute):', context.auth.isAuth)
+      throw redirect({ to: getRouteByRole(context.auth.role?.name), replace: true })
     }
   }
-});
+})
 
 const AdminRoute = createRoute({
   getParentRoute: () => RootRoute,
@@ -28,10 +28,10 @@ const AdminRoute = createRoute({
   component: AdminDashboard,
   beforeLoad: ({ context }: { context: MyRouterContext }) => {
     if (!context.auth.isAuth || context.auth.role?.name !== 'Центр Управления Полётами') {
-      throw redirect({ to: '/' });
+      throw redirect({ to: '/' })
     }
   }
-});
+})
 
 const CommanderRoute = createRoute({
   getParentRoute: () => RootRoute,
@@ -39,10 +39,10 @@ const CommanderRoute = createRoute({
   component: CommanderDashboard,
   beforeLoad: ({ context }) => {
     if (!context.auth.isAuth || context.auth.role?.name !== 'Командир Экипажа') {
-      throw redirect({ to: '/' });
+      throw redirect({ to: '/' })
     }
-  },
-});
+  }
+})
 
 const EngineerRoute = createRoute({
   getParentRoute: () => RootRoute,
@@ -50,10 +50,10 @@ const EngineerRoute = createRoute({
   component: EngineerDashboard,
   beforeLoad: ({ context }) => {
     if (!context.auth.isAuth || context.auth.role?.name !== 'Бортовой Инженер') {
-      throw redirect({ to: '/' });
+      throw redirect({ to: '/' })
     }
-  },
-});
+  }
+})
 
 const AstronautRoute = createRoute({
   getParentRoute: () => RootRoute,
@@ -61,10 +61,10 @@ const AstronautRoute = createRoute({
   component: AstronautDashboard,
   beforeLoad: ({ context }) => {
     if (!context.auth.isAuth || context.auth.role?.name !== 'Космонавт') {
-      throw redirect({ to: '/' });
+      throw redirect({ to: '/' })
     }
-  },
-});
+  }
+})
 
 const GroundRoute = createRoute({
   getParentRoute: () => RootRoute,
@@ -72,14 +72,10 @@ const GroundRoute = createRoute({
   component: GroundDashboard,
   beforeLoad: ({ context }) => {
     if (!context.auth.isAuth || context.auth.role?.name !== 'Наземный Персонал') {
-      throw redirect({ to: '/' });
+      throw redirect({ to: '/' })
     }
-  },
-});
-
-
-
-
+  }
+})
 
 export const routeTree = RootRoute.addChildren([
   LoginRoute,
@@ -87,5 +83,5 @@ export const routeTree = RootRoute.addChildren([
   CommanderRoute,
   EngineerRoute,
   AstronautRoute,
-  GroundRoute,
-]);
+  GroundRoute
+])

@@ -1,5 +1,5 @@
-import { AuthContext } from './auth';
+import { AuthContext } from './auth'
 
-export interface MyRouterContext{
-    auth:AuthContext;
+export interface MyRouterContext {
+  auth: AuthContext
 }

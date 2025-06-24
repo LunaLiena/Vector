@@ -1,10 +1,10 @@
-import { resolve } from 'path';
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
-import react from '@vitejs/plugin-react';
-import { env } from 'process';
-import vike from 'vike/plugin';
+import { resolve } from 'path'
+import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
+import react from '@vitejs/plugin-react'
+import { env } from 'process'
+import vike from 'vike/plugin'
 
-const backendURl = env.VITE_APP_BACKEND_URL || 'http://127.0.0.1:3000';
+const backendURl = env.VITE_APP_BACKEND_URL || 'http://127.0.0.1:3000'
 
 export default defineConfig({
   main: {
@@ -28,11 +28,10 @@ export default defineConfig({
         '@api-types': resolve('src/renderer/src/api/apiTypes'),
         '@services': resolve('src/renderer/src/services'),
         '@role-components': resolve('src/renderer/src/components/roles'),
-        '@styles':resolve('src/renderer/src/style'),
-        '@utils':resolve('src/renderer/src/utils'),
-        '@routes':resolve('src/renderer/src/routes'),
-        '@hooks':resolve('src/renderer/src/hooks'),
-      
+        '@styles': resolve('src/renderer/src/style'),
+        '@utils': resolve('src/renderer/src/utils'),
+        '@routes': resolve('src/renderer/src/routes'),
+        '@hooks': resolve('src/renderer/src/hooks')
       }
     },
     plugins: [
@@ -40,7 +39,7 @@ export default defineConfig({
       {
         ...vike(),
         enforce: 'post',
-        apply: 'serve',
+        apply: 'serve'
       }
     ],
     define: {
@@ -49,19 +48,15 @@ export default defineConfig({
       }
     },
     server: {
-
       proxy: {
         '/api': {
           target: backendURl,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
           secure: false,
-          ws: true,
+          ws: true
         }
       }
     }
-  },
-
-});
-
-
+  }
+})

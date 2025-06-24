@@ -1,14 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  Button,
-  Text,
-  TextInput,
-  Select,
-  TextArea,
-  Modal,
-  Spin,
-  Label,
-} from '@gravity-ui/uikit';
+import { Button, Text, TextInput, Select, TextArea, Modal, Spin, Label } from '@gravity-ui/uikit';
 import { DatePicker } from '@gravity-ui/date-components';
 import { User } from '@api-types/user';
 import { DateTime, dateTimeParse } from '@gravity-ui/date-utils';
@@ -37,7 +28,7 @@ export const CreateTask = () => {
 
         const [currentUser, assignableUsers] = await Promise.all([
           UserService.getCurrentUser(),
-          UserService.getAllUsers().catch(err => {
+          UserService.getAllUsers().catch((err) => {
             if (err.message.includes('permission')) {
               setError('You need commander privileges to assign tasks');
             }
@@ -46,7 +37,13 @@ export const CreateTask = () => {
         ]);
 
         setUser(currentUser);
-        setUsers(assignableUsers.filter(user => user.role?.name !== 'Центр Управления Полётами' && user.role?.name !== 'Командир Экипажа'));
+        setUsers(
+          assignableUsers.filter(
+            (user) =>
+              user.role?.name !== 'Центр Управления Полётами' &&
+              user.role?.name !== 'Командир Экипажа'
+          )
+        );
         setFilteredUsers(assignableUsers);
       } catch (err) {
         console.error('Failed to fetch users:', err);
@@ -63,10 +60,13 @@ export const CreateTask = () => {
     if (searchTerm.trim() === '') {
       setFilteredUsers(users);
     } else {
-      const filtered = users.filter(u => u.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (u.role?.name &&
-          u.role.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (u.status?.status_name && u.status.status_name.toLowerCase().includes(searchTerm.toLowerCase())));
+      const filtered = users.filter(
+        (u) =>
+          u.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (u.role?.name && u.role.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (u.status?.status_name &&
+            u.status.status_name.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
       setFilteredUsers(filtered);
     }
   }, [searchTerm, users]);
@@ -87,7 +87,7 @@ export const CreateTask = () => {
         dueDate: dueDate.toISOString(),
         assignedTo: parseInt(assignedTo),
         createdBy: user!.id,
-        statusId: 1, // "Ожидание запуска" status
+        statusId: 1 // "Ожидание запуска" status
       });
 
       setSuccess(true);
@@ -104,11 +104,10 @@ export const CreateTask = () => {
     }
   };
 
-  const userOptions = users.map(u => ({
+  const userOptions = users.map((u) => ({
     value: u.id.toString(),
-    content: `${u.username} (${u.role?.name})${u.status?.status_name ? ' - ' + u.status.status_name : ''}`,
+    content: `${u.username} (${u.role?.name})${u.status?.status_name ? ' - ' + u.status.status_name : ''}`
   }));
-
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
@@ -131,7 +130,7 @@ export const CreateTask = () => {
           </div>
 
           <div style={{ marginBottom: '20px' }}>
-            <Label theme='normal'>Описание</Label>
+            <Label theme="normal">Описание</Label>
             <TextArea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -146,7 +145,7 @@ export const CreateTask = () => {
               label="Дата:"
               value={dueDate}
               onUpdate={(date) => setDueDate(date)}
-              pin='brick-brick'
+              pin="brick-brick"
               placeholder="Выберите крайнюю дату"
               minValue={dateTimeParse(dueDate)}
               size="l"
@@ -154,7 +153,6 @@ export const CreateTask = () => {
           </div>
 
           <div style={{ marginBottom: '20px' }}>
-
             <Select
               label="Назначить на:"
               value={[assignedTo]}
@@ -178,17 +176,11 @@ export const CreateTask = () => {
             </div>
           )}
 
-          <Button
-            view="action"
-            size="l"
-            type="submit"
-            loading={loading}
-          >
+          <Button view="action" size="l" type="submit" loading={loading}>
             Создать задачу
           </Button>
         </form>
       )}
-
 
       <Modal open={success} onOpenChange={() => setSuccess(false)}>
         <motion.div
@@ -203,10 +195,13 @@ export const CreateTask = () => {
             maxWidth: '420px',
             margin: 'auto',
             boxShadow: '0 12px 32px rgba(0, 0, 0, 0.3)',
-            textAlign: 'center',
+            textAlign: 'center'
           }}
         >
-          <Text variant="header-1" style={{ marginBottom: '12px', color: 'var(--g-color-text-primary)' }}>
+          <Text
+            variant="header-1"
+            style={{ marginBottom: '12px', color: 'var(--g-color-text-primary)' }}
+          >
             ✅ Задача создана <br />
           </Text>
           <Text style={{ fontSize: '16px', color: 'var(--g-color-text-secondary)' }}>

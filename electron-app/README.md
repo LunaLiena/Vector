@@ -22,3 +22,4 @@ $ npm run format
 
 # Combined fix & format (add this to package.json scripts if needed)
 $ npm run fix-all
+```

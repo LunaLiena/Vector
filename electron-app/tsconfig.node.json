@@ -6,6 +6,9 @@
     "types": ["electron-vite/node","vike/types"],
     "paths": {
       "@/*":["./src/*"]
-    }
+    },
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "skipLibCheck": true
   }
 }

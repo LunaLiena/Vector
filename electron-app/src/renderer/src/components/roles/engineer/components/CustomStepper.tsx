@@ -1,16 +1,16 @@
-import React from 'react';
-import './CustomStepper.css';
+import React from 'react'
+import './CustomStepper.css'
 
-type StepStatus = 'waiting' | 'in-progress' | 'completed' | 'error' | 'paused';
+type StepStatus = 'waiting' | 'in-progress' | 'completed' | 'error' | 'paused'
 
 interface Step {
-  title: string;
-  status: StepStatus;
+  title: string
+  status: StepStatus
 }
 
 interface CustomStepperProps {
-  steps: Step[];
-  separator?: string;
+  steps: Step[]
+  separator?: string
 }
 
 export const CustomStepper: React.FC<CustomStepperProps> = ({ steps, separator = '>' }) => {
@@ -22,11 +22,9 @@ export const CustomStepper: React.FC<CustomStepperProps> = ({ steps, separator =
             <div className="step-circle"></div>
             <div className="step-title">{step.title}</div>
           </div>
-          {index < steps.length - 1 && (
-            <div className="separator">{separator}</div>
-          )}
+          {index < steps.length - 1 && <div className="separator">{separator}</div>}
         </React.Fragment>
       ))}
     </div>
-  );
-};
+  )
+}

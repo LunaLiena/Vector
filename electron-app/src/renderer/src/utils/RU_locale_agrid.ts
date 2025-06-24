@@ -48,7 +48,7 @@ export const localeText = {
 
   // Панель состояния
   noRowsToShow: 'Нет данных для отображения',
-  blank:	'Пусто',
-  notBlank:	'Не пусто',
-  Page:'Страница',
-};
+  blank: 'Пусто',
+  notBlank: 'Не пусто',
+  Page: 'Страница'
+}

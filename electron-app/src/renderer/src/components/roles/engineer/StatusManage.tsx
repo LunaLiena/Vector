@@ -21,7 +21,7 @@ export const StatusManage = () => {
   const [pendingStatusId, setPendingStatusId] = useState<number | null>(null);
   const [replyToId, setReplyToId] = useState<number | null>(null);
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
-  const [users, setUsers] = useState<{ id: number, username: string }[]>([]);
+  const [users, setUsers] = useState<{ id: number; username: string }[]>([]);
 
   // Загрузка данных при монтировании компонента
   useEffect(() => {
@@ -57,9 +57,9 @@ export const StatusManage = () => {
     const loadComments = async () => {
       try {
         const commentsData = await CommentService.getTaskComments(selectedTask.id);
-        const commentsWithAuthors = commentsData.map(comment => ({
+        const commentsWithAuthors = commentsData.map((comment) => ({
           ...comment,
-          author: users.find(u => u.id === comment.author_id) || null
+          author: users.find((u) => u.id === comment.author_id) || null
         }));
         setComments(commentsWithAuthors);
         console.log('Comments loaded for task:', selectedTask.id, commentsWithAuthors);
@@ -90,17 +90,14 @@ export const StatusManage = () => {
 
     setIsSubmittingComment(true);
     try {
-      const comment = await CommentService.createTaskComment(
-        selectedTask.id,
-        { text: newComment }
-      );
+      const comment = await CommentService.createTaskComment(selectedTask.id, { text: newComment });
 
       const commentWithAuthor = {
         ...comment,
-        author: users.find(u => u.id === comment.author_id) || null
+        author: users.find((u) => u.id === comment.author_id) || null
       };
 
-      setComments(prev => [...prev, commentWithAuthor]);
+      setComments((prev) => [...prev, commentWithAuthor]);
       setNewComment('');
       setReplyToId(null);
     } catch (err) {
@@ -111,29 +108,26 @@ export const StatusManage = () => {
   };
 
   const handleStatusChange = async (statusName: string) => {
-    if(!selectedTask)return;
+    if (!selectedTask) return;
 
-    const statusId = statuses.find(s=>
-      s.status_name.toLowerCase() === statusName.toLowerCase()
+    const statusId = statuses.find(
+      (s) => s.status_name.toLowerCase() === statusName.toLowerCase()
     )?.id;
 
-    if(!statusId){
-      console.error('Статус не найден:',statusName);
+    if (!statusId) {
+      console.error('Статус не найден:', statusName);
       setError('Указанный статус не существует');
       return;
     }
 
-    try{
+    try {
       setIsLoading(true);
-      const updatedTask = await TaskService.updateTaskStatus(selectedTask.id,statusId);
+      const updatedTask = await TaskService.updateTaskStatus(selectedTask.id, statusId);
 
-      setTasks(prev=>prev.map(t=>
-        t.id === updatedTask.id ? updatedTask : t
-      ));
+      setTasks((prev) => prev.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
       setSelectedTask(updatedTask);
       setError(null);
-
-    }catch(err){
+    } catch (err) {
       console.error('Ошибка изменения статуса:', err);
       setError('Не удалось изменить статус');
     } finally {
@@ -151,9 +145,9 @@ export const StatusManage = () => {
 
       const updatedTasks = await TaskService.getTasks();
       setTasks(updatedTasks);
-      
-      const updatedTask = updatedTasks.find(t=>t.id===selectedTask.id);
-      
+
+      const updatedTask = updatedTasks.find((t) => t.id === selectedTask.id);
+
       setSelectedTask(updatedTask || null);
     } catch (err) {
       console.error('Ошибка обновления статуса:', err);
@@ -168,9 +162,7 @@ export const StatusManage = () => {
   if (error) return <div>{error}</div>;
 
   // Фильтрация задач по статусу "На выполнении"
-  const inProgressTasks = tasks.filter(task=>
-    task.status?.status_name === 'На выполнении'
-  );
+  const inProgressTasks = tasks.filter((task) => task.status?.status_name === 'На выполнении');
 
   console.log('Rendering with selectedTask:', selectedTask); // Отладочная информация
 
@@ -178,28 +170,25 @@ export const StatusManage = () => {
     <div style={{ padding: '20px' }}>
       <h2>Задачи в работе</h2>
       <br />
-      <TaskCard 
-        taskProgressList={inProgressTasks} 
-        handleTaskSelect={handleTaskSelect} 
-      />
+      <TaskCard taskProgressList={inProgressTasks} handleTaskSelect={handleTaskSelect} />
 
       {/* Модальное окно с деталями задачи */}
-      <TaskDetailsModal 
-        selectedTask={selectedTask} 
-        onClose={()=>setSelectedTask(null)} 
-        comments={comments} 
-        newComment={newComment} 
-        setNewComment={setNewComment} 
+      <TaskDetailsModal
+        selectedTask={selectedTask}
+        onClose={() => setSelectedTask(null)}
+        comments={comments}
+        newComment={newComment}
+        setNewComment={setNewComment}
         handleSubmitComment={handleSubmitComment}
         handleStatusChange={handleStatusChange}
-        replyToId={replyToId} 
+        replyToId={replyToId}
         setReplyToId={setReplyToId}
-        isSubmittingComment={isSubmittingComment} 
-        isLoading={isLoading}        
+        isSubmittingComment={isSubmittingComment}
+        isLoading={isLoading}
       />
 
       {/* Модальное окно подтверждения */}
-      <TaskConfirmModal 
+      <TaskConfirmModal
         showConfirmation={showConfirmation}
         setShowConfirmation={setShowConfirmation}
         confirmStatusChange={confirmStatusChange}

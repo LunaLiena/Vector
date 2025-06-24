@@ -1,26 +1,25 @@
-import '@gravity-ui/uikit/styles/fonts.css';
+import '@gravity-ui/uikit/styles/fonts.css'
 // import '@gravity-ui/uikit/styles/styles.css';
-import '@styles/gravity-ui-light-theme.css';
+import '@styles/gravity-ui-light-theme.css'
 
-
-import { RouterProvider } from '@tanstack/react-router';
-import { router } from '@routes/router';
-import { useAuthStore } from '@store/authStore';
-import { useEffect } from 'react';
-import { authService } from '@services/authService';
+import { RouterProvider } from '@tanstack/react-router'
+import { router } from '@routes/router'
+import { useAuthStore } from '@store/authStore'
+import { useEffect } from 'react'
+import { authService } from '@services/authService'
 
 function App() {
-  const { isAuth, user} = useAuthStore();
+  const { isAuth, user } = useAuthStore()
 
-  useEffect(()=>{
-    if(isAuth){
-      authService.checkAuth().then(isValid=>{
-        if(!isValid){
-          console.warn('Initial auth check failed');
+  useEffect(() => {
+    if (isAuth) {
+      authService.checkAuth().then((isValid) => {
+        if (!isValid) {
+          console.warn('Initial auth check failed')
         }
-      });
+      })
     }
-  },[isAuth]);
+  }, [isAuth])
 
   return (
     <RouterProvider
@@ -28,11 +27,11 @@ function App() {
       context={{
         auth: {
           isAuth,
-          role: user?.role || null,
+          role: user?.role || null
         }
       }}
     />
-  );
+  )
 }
 
-export default App;
+export default App

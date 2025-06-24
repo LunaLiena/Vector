@@ -1,10 +1,3 @@
-
-
-export const PrivateOffice = () =>{
-
-  return (
-    <div>
-      Личный кабинет инженера
-    </div>
-  );
-};
+export const PrivateOffice = () => {
+  return <div>Личный кабинет инженера</div>
+}

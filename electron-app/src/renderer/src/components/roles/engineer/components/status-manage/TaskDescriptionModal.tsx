@@ -8,22 +8,21 @@ import { ru } from 'date-fns/locale';
 import { TaskService } from '../../../../../services/taskService';
 
 export interface ExtendedComment extends Omit<CommentType, 'author'> {
-  author: { username: string } | null;
+  author: { username: string } | null
 }
 
-
 interface TaskDetailsModalProps {
-  selectedTask: Task | null;
-  onClose: () => void;
-  comments: ExtendedComment[];
-  newComment: string;
-  setNewComment: (value: string) => void;
-  handleSubmitComment: () => void;
-  handleStatusChange: (statusName: string) => void;
-  replyToId: number | null;
-  setReplyToId: (id: number | null) => void;
-  isSubmittingComment: boolean;
-  isLoading: boolean;
+  selectedTask: Task | null
+  onClose: () => void
+  comments: ExtendedComment[]
+  newComment: string
+  setNewComment: (value: string) => void
+  handleSubmitComment: () => void
+  handleStatusChange: (statusName: string) => void
+  replyToId: number | null
+  setReplyToId: (id: number | null) => void
+  isSubmittingComment: boolean
+  isLoading: boolean
 }
 
 const formatDate = (dateString: string) => {
@@ -41,23 +40,22 @@ export const TaskDetailsModal = ({
   replyToId,
   setReplyToId,
   isSubmittingComment,
-  isLoading,
+  isLoading
 }: TaskDetailsModalProps) => {
+  const [showStatusConfirmation, setShowStatusConfirmation] = useState(false);
+  const [targetStatus, setTargetStatus] = useState<string | null>(null);
+  const [isChaingingStatus, setIsChangingStatus] = useState(false);
 
-  const [showStatusConfirmation,setShowStatusConfirmation] = useState(false);
-  const [targetStatus,setTargetStatus] = useState<string|null>(null);
-  const [isChaingingStatus,setIsChangingStatus] = useState(false);
-
-  const statusNameToId:Record<string,number> = {
+  const statusNameToId: Record<string, number> = {
     'Ожидание запуска': 1,
     'На выполнении': 2,
     'Миссия выполнена': 3,
-    'Отменена': 4,
-    'Приостановлена': 5,
+    Отменена: 4,
+    Приостановлена: 5,
     'На проверке': 6,
-    'Просрочена': 7,
-    'Назначена': 8,
-    'В очереди': 9,
+    Просрочена: 7,
+    Назначена: 8,
+    'В очереди': 9
   };
 
   const handleStatusChangeClick = (statusName: string) => {
@@ -91,38 +89,45 @@ export const TaskDetailsModal = ({
 
   return (
     <Modal open={!!selectedTask} onOpenChange={onClose}>
-      <div style={{
-        padding: '24px',
-        borderRadius: '8px',
-      }}>
+      <div
+        style={{
+          padding: '24px',
+          borderRadius: '8px'
+        }}
+      >
         {selectedTask && (
           <>
-            <Text variant="header-1">{selectedTask.title}</Text><br />
-            <Text>{selectedTask.description}</Text><br />
+            <Text variant="header-1">{selectedTask.title}</Text>
+            <br />
+            <Text>{selectedTask.description}</Text>
+            <br />
             <Text>Срок: {new Date(selectedTask.due_date).toLocaleDateString()}</Text>
 
             <div style={{ marginTop: '24px' }}>
               <Text variant="subheader-2">Комментарии:</Text>
-              <div style={{
-                maxHeight: '300px',
-                overflowY: 'auto',
-                margin: '16px 0',
-                border: '1px solid #eee',
-                borderRadius: '4px',
-                padding: '12px'
-              }}>
+              <div
+                style={{
+                  maxHeight: '300px',
+                  overflowY: 'auto',
+                  margin: '16px 0',
+                  border: '1px solid #eee',
+                  borderRadius: '4px',
+                  padding: '12px'
+                }}
+              >
                 {comments.length > 0 ? (
-                  comments.map(comment => (
-                    <div key={comment.id} style={{
-                      marginBottom: '12px',
-                      padding: '12px',
-                      borderRadius: '4px',
-                      borderWidth: '4px'
-                    }}>
+                  comments.map((comment) => (
+                    <div
+                      key={comment.id}
+                      style={{
+                        marginBottom: '12px',
+                        padding: '12px',
+                        borderRadius: '4px',
+                        borderWidth: '4px'
+                      }}
+                    >
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Text variant="subheader-2">
-                          {comment.author?.username || 'Аноним'}
-                        </Text>
+                        <Text variant="subheader-2">{comment.author?.username || 'Аноним'}</Text>
                         <Text color="secondary">
                           {comment.created_at ? formatDate(comment.created_at) : ''}
                         </Text>
@@ -160,10 +165,7 @@ export const TaskDetailsModal = ({
                   Отправить
                 </Button>
                 {replyToId && (
-                  <Button
-                    view="flat-secondary"
-                    onClick={() => setReplyToId(null)}
-                  >
+                  <Button view="flat-secondary" onClick={() => setReplyToId(null)}>
                     Отменить
                   </Button>
                 )}
@@ -172,7 +174,9 @@ export const TaskDetailsModal = ({
 
             <div style={{ marginTop: '24px' }}>
               <Text variant="subheader-2">Изменить статус:</Text>
-              <div style={{ display: 'flex', gap: '8px', marginTop: '12px',flexDirection:'column' }}>
+              <div
+                style={{ display: 'flex', gap: '8px', marginTop: '12px', flexDirection: 'column' }}
+              >
                 <Button
                   view="outlined-success"
                   onClick={() => handleStatusChangeClick('Миссия выполнена')}

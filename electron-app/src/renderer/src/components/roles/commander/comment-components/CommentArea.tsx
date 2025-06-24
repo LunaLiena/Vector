@@ -1,18 +1,16 @@
-import { Button, TextArea } from '@gravity-ui/uikit';
+import { Button, TextArea } from '@gravity-ui/uikit'
 
 export interface CreateCommentAreaProps {
-  replyToId:number | null;
-  newComment:string;
-  setNewComment:(e:React.SetStateAction<string>)=>void;
-  handleSubmitComment:()=>Promise<void>;
-  setReplyToId: (value: React.SetStateAction<number | null>) => void;
-  isSubmitting:boolean;
-
+  replyToId: number | null
+  newComment: string
+  setNewComment: (e: React.SetStateAction<string>) => void
+  handleSubmitComment: () => Promise<void>
+  setReplyToId: (value: React.SetStateAction<number | null>) => void
+  isSubmitting: boolean
 }
 
-export const CreateCommentArea = (props:CreateCommentAreaProps) =>{
-
-  return(
+export const CreateCommentArea = (props: CreateCommentAreaProps) => {
+  return (
     <div style={{ marginTop: 16 }}>
       <TextArea
         placeholder={props.replyToId ? 'Ответ на комментарий...' : 'Новый комментарий...'}
@@ -32,15 +30,11 @@ export const CreateCommentArea = (props:CreateCommentAreaProps) =>{
           Отправить
         </Button>
         {props.replyToId && (
-          <Button
-            size="m"
-            view="flat-secondary"
-            onClick={() => props.setReplyToId(null)}
-          >
+          <Button size="m" view="flat-secondary" onClick={() => props.setReplyToId(null)}>
             Отменить ответ
           </Button>
         )}
       </div>
     </div>
-  );
-};
+  )
+}

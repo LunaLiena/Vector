@@ -1,73 +1,72 @@
-import api from '@api/api';
-import type { User } from '@api-types/user';
-
+import api from '@api/api'
+import type { User } from '@api-types/user'
 
 export interface UpdateUserData {
-  username?: string;
-  role_id?: number;
-  status_id?: number | null;
+  username?: string
+  role_id?: number
+  status_id?: number | null
 }
 
 export const UserService = {
   getAllUsers: async (): Promise<Array<User>> => {
-    const response = await api.get<Array<User>>('/users');
-    return response.data;
+    const response = await api.get<Array<User>>('/users')
+    return response.data
   },
   getUserById: async (id: number): Promise<User> => {
-    const response = await api.get<User>(`/user/${id}`);
-    return response.data;
+    const response = await api.get<User>(`/user/${id}`)
+    return response.data
   },
   deleteUser: async (userId: number): Promise<void> => {
-    await api.delete(`/users/${userId}`);
+    await api.delete(`/users/${userId}`)
   },
 
   async getCurrentUser(): Promise<User> {
     try {
-      const response = await api.get('/users/me');
-      return response.data;
+      const response = await api.get('/users/me')
+      return response.data
     } catch (err) {
-      console.error('Error fetching current user:', err);
-      throw err;
+      console.error('Error fetching current user:', err)
+      throw err
     }
   },
 
   async updateUser(id: number, userData: UpdateUserData): Promise<User> {
     try {
-      const response = await api.put(`/users/${id}`, userData);
-      return response.data;
+      const response = await api.put(`/users/${id}`, userData)
+      return response.data
     } catch (error) {
-      console.error(`Error updating user ${id}:`, error);
-      throw error;
+      console.error(`Error updating user ${id}:`, error)
+      throw error
     }
   },
 
   async getAssignableUsers(): Promise<Array<User>> {
     try {
-      const response = await api.get('/users/assignable');
-      return response.data;
+      const response = await api.get('/users/assignable')
+      return response.data
     } catch (err) {
-      console.error('Error getAssignableUsers:', err);
-      throw err;
+      console.error('Error getAssignableUsers:', err)
+      throw err
     }
   },
 
   async resetPassword(id: number): Promise<{ password: string }> {
     try {
-      const response = await api.post(`/users/${id}/reset-password`);
-      return response.data;
+      const response = await api.post(`/users/${id}/reset-password`)
+      return response.data
     } catch (error) {
-      console.error(`Error resetting password for user ${id}:`, error);
-      throw error;
+      console.error(`Error resetting password for user ${id}:`, error)
+      throw error
     }
   },
 
-  async getUserRole(id: number): Promise<{ id: number, name: string }> {
+  async getUserRole(id: number): Promise<{ id: number; name: string }> {
     try {
-      const response = await api.get(`users/${id}/role`);
-      return response.data;
+      const response = await api.get(`users/${id}/role`)
+      return response.data
     } catch (err) {
-      console.error(`Error fetching role for user ${id}:`, err);
-      throw err;
+      console.error(`Error fetching role for user ${id}:`, err)
+      throw err
     }
   }
-};
+}

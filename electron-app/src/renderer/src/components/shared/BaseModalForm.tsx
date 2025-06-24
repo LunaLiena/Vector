@@ -1,12 +1,12 @@
 // shared/BaseModalForm.tsx
-import { Text, Box, Button, Card, Modal } from '@gravity-ui/uikit';
-import { motion } from 'framer-motion';
+import { Text, Box, Button, Card, Modal } from '@gravity-ui/uikit'
+import { motion } from 'framer-motion'
 
 interface BaseModalFormProps {
-  title: string;
-  children: React.ReactNode;
-  onClose: () => void;
-  width?: number | string;
+  title: string
+  children: React.ReactNode
+  onClose: () => void
+  width?: number | string
 }
 
 const MotionDiv = ({ children }: { children: React.ReactNode }) => (
@@ -17,38 +17,35 @@ const MotionDiv = ({ children }: { children: React.ReactNode }) => (
   >
     {children}
   </motion.div>
-);
+)
 
-export const BaseModalForm = ({ 
-  title, 
-  children, 
-  onClose, 
-  width = 500 
-}: BaseModalFormProps) => {
+export const BaseModalForm = ({ title, children, onClose, width = 500 }: BaseModalFormProps) => {
   return (
     <Modal open={true} onClose={onClose}>
-      <div style={{ 
-        padding: '32px',
-        width: width,
-        maxWidth: '90vw',
-        margin: '0 auto'
-      }}>
+      <div
+        style={{
+          padding: '32px',
+          width: width,
+          maxWidth: '90vw',
+          margin: '0 auto'
+        }}
+      >
         <MotionDiv>
-          <Text 
-            variant="header-2" 
-            as="h2" 
-            style={{ 
-              marginBottom: 24, 
+          <Text
+            variant="header-2"
+            as="h2"
+            style={{
+              marginBottom: 24,
               textAlign: 'center',
               color: 'var(--g-color-text-primary)'
             }}
           >
             {title}
           </Text>
-            
+
           {children}
         </MotionDiv>
       </div>
     </Modal>
-  );
-};
+  )
+}
